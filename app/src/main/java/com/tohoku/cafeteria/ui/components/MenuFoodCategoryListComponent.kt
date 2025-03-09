@@ -63,7 +63,7 @@ fun MenuFoodCategoryListComponent(
                             .fillMaxWidth()
                             .padding(vertical = 4.dp),
                         shape = RoundedCornerShape(12.dp),
-                        color = MaterialTheme.colorScheme.primaryContainer
+                        tonalElevation = 1.dp
                     ) {
                         ListItem(
                             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
