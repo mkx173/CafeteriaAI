@@ -3,15 +3,10 @@ package com.tohoku.cafeteria.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
@@ -23,19 +18,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.lerp
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.domain.model.MenuItem
 import com.tohoku.cafeteria.domain.model.NutritionData
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
-import kotlin.math.max
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuFoodCategoryComponent(
+fun MenuCarouselComponent(
     modifier: Modifier = Modifier,
     title: String,
     items: List<MenuItem>
@@ -43,19 +35,11 @@ fun MenuFoodCategoryComponent(
     Column(
         modifier = modifier.padding(bottom = 16.dp).padding(horizontal = 8.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge,
-            )
-            IconButton(
-                onClick = {}
-            ) {
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, "Show all")
-            }
-        }
+        Text(
+            modifier = Modifier.padding(vertical = 8.dp),
+            text = title,
+            style = MaterialTheme.typography.titleLarge,
+        )
 
         HorizontalMultiBrowseCarousel(
             state = rememberCarouselState { items.count() },
@@ -68,7 +52,7 @@ fun MenuFoodCategoryComponent(
             ) {
                 Image(
                     painter = painterResource(R.drawable.sample_food),
-                    modifier = Modifier.height(186.dp).maskClip(MaterialTheme.shapes.extraLarge),
+                    modifier = Modifier.height(186.dp).maskClip(MaterialTheme.shapes.large),
                     contentDescription = item.name,
                     contentScale = ContentScale.Crop,
                 )
@@ -83,16 +67,16 @@ fun MenuFoodCategoryComponent(
                         .graphicsLayer {
                             // Fade the text in once the carousel item's size is large enough to
                             // display the entire text
-                            alpha =
-                                lerp(
-                                    0f,
-                                    1f,
-                                    max(
-                                        size.width - (carouselItemInfo.maxSize) +
-                                                carouselItemInfo.size,
-                                        0f
-                                    ) / size.width
-                                )
+//                            alpha =
+//                                lerp(
+//                                    0f,
+//                                    1f,
+//                                    max(
+//                                        size.width - (carouselItemInfo.maxSize) +
+//                                                carouselItemInfo.size,
+//                                        0f
+//                                    ) / size.width
+//                                )
                             // Translate the text to be pinned to the left side of the item's mask
                             translationX = carouselItemInfo.maskRect.left
                         }
@@ -104,9 +88,9 @@ fun MenuFoodCategoryComponent(
 
 @Preview(showBackground = true)
 @Composable
-fun MenuFoodCategoryComponentPreview() {
+fun MenuCarouselComponentPreview() {
     CafeteriaAITheme {
-        MenuFoodCategoryComponent(
+        MenuCarouselComponent(
             title = "Burgers",
             items = List(5) {
                 MenuItem(

@@ -1,39 +1,28 @@
 package com.tohoku.cafeteria.ui.navigation
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.MenuBook
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Reviews
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -41,7 +30,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.ui.history.HistoryScreen
 import com.tohoku.cafeteria.ui.menu.MenuScreen
-import com.tohoku.cafeteria.ui.menu.MenuViewModel
 import com.tohoku.cafeteria.ui.recommendation.RecommendationScreen
 import com.tohoku.cafeteria.ui.settings.SettingsScreen
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -136,8 +124,7 @@ fun CafeteriaNavHost(
         ) {
             composable(Screen.Menu.route) {
                 MenuScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    snackbarHostState = snackbarHostState,
+                    modifier = Modifier.padding(innerPadding)
                 )
             }
             composable(Screen.Recommendation.route) {

@@ -1,7 +1,7 @@
 package com.tohoku.cafeteria.ui.menu
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -37,11 +37,11 @@ class MenuViewModel(
         viewModelScope.launch {
             try {
                 // Simulate network delay.
-                delay(2000)
+                delay(1000)
                 // Simulate a refresh failure 30% of the time.
-                if (Math.random() < 0.3) {
-                    throw Exception("Failed to refresh data. Please try again.")
-                }
+//                if (Math.random() < 0.3) {
+//                    throw Exception("Failed to refresh data. Please try again.")
+//                }
                 // Update the state with fetched data.
                 _uiState.value = _uiState.value.copy(menuData = menuRepository.getMenu())
             } catch (e: Exception) {
