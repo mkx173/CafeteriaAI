@@ -2,6 +2,7 @@ package com.tohoku.cafeteria.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -49,7 +50,7 @@ fun MenuFoodCategoryListComponent(
         }
         items(categoryData) { foodCategory ->
             Column(
-                modifier = Modifier.padding(horizontal = 8.dp)
+                modifier = Modifier.padding(horizontal = 8.dp).padding(top = 16.dp)
             ) {
                 Text(
                     modifier = Modifier.padding(vertical = 8.dp),
@@ -94,6 +95,9 @@ fun MenuFoodCategoryListComponent(
                     }
                 }
             }
+        }
+        item {
+            Spacer(modifier = Modifier.size(4.dp))
         }
     }
 }

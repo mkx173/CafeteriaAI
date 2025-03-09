@@ -33,7 +33,7 @@ fun MenuCarouselComponent(
     items: List<MenuItem>
 ) {
     Column(
-        modifier = modifier.padding(bottom = 16.dp).padding(horizontal = 8.dp)
+        modifier = modifier.padding(horizontal = 8.dp)
     ) {
         Text(
             modifier = Modifier.padding(vertical = 8.dp),
