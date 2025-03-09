@@ -37,7 +37,7 @@ fun MenuFoodCategoryListComponent(
     categoryData: List<FoodCategory>
 ) {
     LazyColumn(
-        modifier = modifier.fillMaxSize().padding(bottom = 16.dp).padding(horizontal = 8.dp),
+        modifier = modifier.fillMaxSize().padding(horizontal = 8.dp),
     ) {
         if (categoryData.isNotEmpty()) {
             item {
