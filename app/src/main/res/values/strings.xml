@@ -11,11 +11,11 @@
     <string name="bmr_option_default">Default BMR</string>
     <string name="bmr_option_calculate">Calculate from personal info</string>
     <string name="bmr_option_custom">Custom value</string>
-    <string name="exercise_level_sedentary">Sedentary (little or no exercise)</string>
-    <string name="exercise_level_lightly_active">Lightly active (light exercise 1-3 days/week)</string>
-    <string name="exercise_level_moderately_active">Moderately active (moderate exercise 3-5 days/week)</string>
-    <string name="exercise_level_very_active">Very active (hard exercise 6-7 days/week)</string>
-    <string name="exercise_level_extra_active"><![CDATA[Extra active (very hard exercise & physical job)]]></string>
+    <string name="exercise_level_sedentary">Sedentary</string>
+    <string name="exercise_level_lightly_active">Lightly active</string>
+    <string name="exercise_level_moderately_active">Moderately active</string>
+    <string name="exercise_level_very_active">Very active</string>
+    <string name="exercise_level_extra_active">Extra active</string>
     <string name="settings_customization">Customization</string>
     <string name="settings_bmr">Basal Metabolic Rate (BMR)</string>
     <string name="settings_kcal_display">%1$s kcal</string>
@@ -36,4 +36,7 @@
     <string name="calculate_bmr_exercise_level_hint">Exercise Level</string>
     <string name="calculate_button">Calculate</string>
     <string name="refresh_button">Refresh</string>
+    <string name="error_non_positive_integer">Please enter a positive integer</string>
+    <string name="error_empty">Please enter a value</string>
+    <string name="error_check_input">Please check your input and try again</string>
 </resources>

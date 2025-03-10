@@ -1,5 +1,6 @@
 package com.tohoku.cafeteria.ui.settings
 
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -41,6 +42,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -246,6 +250,8 @@ fun SettingsScreen(
     }
 }
 
+private fun isPositiveInt(input: String) = input.toIntOrNull()?.let { it > 0 } == true
+
 @Composable
 fun CustomBmrInputDialog(
     initialValue: Int,
@@ -255,7 +261,27 @@ fun CustomBmrInputDialog(
 ) {
     val coroutineScope = rememberCoroutineScope()
     var bmrInput by remember { mutableStateOf(TextFieldValue(initialValue.toString())) }
+    var isError by remember { mutableStateOf(false) }
     val bmrFocus = remember { FocusRequester() }
+    val context = LocalContext.current
+
+    // Helper function to validate and save the input
+    fun handleSave() {
+        if (bmrInput.text.isEmpty()) {
+            Toast.makeText(context,
+                context.getString(R.string.error_empty), Toast.LENGTH_SHORT).show()
+        } else {
+            val value = bmrInput.text.toIntOrNull()
+            if (value != null && value > 0) {
+                onSave(value)
+                onDismiss()
+            } else {
+                isError = true
+                Toast.makeText(context,
+                    context.getString(R.string.error_non_positive_integer), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -263,21 +289,20 @@ fun CustomBmrInputDialog(
         text = {
             OutlinedTextField(
                 value = bmrInput,
-                onValueChange = { bmrInput = it },
+                onValueChange = { newValue ->
+                    bmrInput = newValue
+                    if (isPositiveInt(newValue.text)) {
+                        isError = false
+                    }
+                },
                 label = { Text(stringResource(R.string.enter_custom_bmr_hint)) },
+                isError = isError,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
-                    onDone = {
-                        bmrInput.text.toIntOrNull()?.let { value ->
-                            if (value > 0) {
-                                onSave(value)
-                            }
-                        }
-                        onDismiss()
-                    }
+                    onDone = { handleSave() }
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -297,14 +322,7 @@ fun CustomBmrInputDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = {
-                    bmrInput.text.toIntOrNull()?.let { value ->
-                        if (value > 0) {
-                            onSave(value)
-                        }
-                    }
-                    onDismiss()
-                }
+                onClick = { handleSave() }
             ) {
                 Text(stringResource(R.string.save_button))
             }
@@ -342,10 +360,19 @@ fun PersonalInfoBmrDialog(
     val weightFocus = remember { FocusRequester() }
     val heightFocus = remember { FocusRequester() }
 
+    var isAgeError by remember { mutableStateOf(false) }
+    var isWeightError by remember { mutableStateOf(false) }
+    var isHeightError by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(R.string.calculate_bmr)) },
         text = {
+            val keyboardController = LocalSoftwareKeyboardController.current
+            val focusManager = LocalFocusManager.current
+
             Column {
                 // Gender selection
                 Text(
@@ -375,10 +402,17 @@ fun PersonalInfoBmrDialog(
                         )
                     }
                 }
+
                 // Age input
                 OutlinedTextField(
                     value = age,
-                    onValueChange = { age = it },
+                    onValueChange = { newValue ->
+                        age = newValue
+                        if (isPositiveInt(newValue.text)) {
+                            isAgeError = false
+                        }
+                    },
+                    isError = isAgeError,
                     label = { Text(stringResource(R.string.calculate_bmr_age_hint)) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -391,6 +425,8 @@ fun PersonalInfoBmrDialog(
                                     delay(10) // Small delay to ensure the TextField is ready
                                     age = age.copy(selection = TextRange(0, age.text.length))
                                 }
+                            } else {
+                                isAgeError = age.text.isEmpty() or!isPositiveInt(age.text)
                             }
                         },
                     keyboardOptions = KeyboardOptions(
@@ -398,7 +434,20 @@ fun PersonalInfoBmrDialog(
                         imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
-                        onNext = { weightFocus.requestFocus() }
+                        onNext = {
+                            if (age.text.isEmpty()) {
+                                Toast.makeText(context,
+                                    context.getString(R.string.error_empty), Toast.LENGTH_SHORT).show()
+                            } else {
+                                isAgeError = !isPositiveInt(age.text)
+                                if (!isAgeError) {
+                                    weightFocus.requestFocus()
+                                } else {
+                                    Toast.makeText(context,
+                                        context.getString(R.string.error_non_positive_integer), Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
                     ),
                     maxLines = 1
                 )
@@ -406,7 +455,13 @@ fun PersonalInfoBmrDialog(
                 // Weight input
                 OutlinedTextField(
                     value = weight,
-                    onValueChange = { weight = it },
+                    onValueChange = { newValue ->
+                        weight = newValue
+                        if (isPositiveInt(newValue.text)) {
+                            isWeightError = false
+                        }
+                    },
+                    isError = isWeightError,
                     label = { Text(stringResource(R.string.calculate_bmr_weight_hint)) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -420,6 +475,8 @@ fun PersonalInfoBmrDialog(
                                     weight =
                                         weight.copy(selection = TextRange(0, weight.text.length))
                                 }
+                            } else {
+                                isWeightError = weight.text.isEmpty() or !isPositiveInt(weight.text)
                             }
                         },
                     keyboardOptions = KeyboardOptions(
@@ -427,7 +484,20 @@ fun PersonalInfoBmrDialog(
                         imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
-                        onNext = { heightFocus.requestFocus() }
+                        onNext = {
+                            if (weight.text.isEmpty()) {
+                                Toast.makeText(context,
+                                    context.getString(R.string.error_empty), Toast.LENGTH_SHORT).show()
+                            } else {
+                                isWeightError = !isPositiveInt(weight.text)
+                                if (!isWeightError) {
+                                    heightFocus.requestFocus()
+                                } else {
+                                    Toast.makeText(context,
+                                        context.getString(R.string.error_non_positive_integer), Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
                     ),
                     maxLines = 1
                 )
@@ -435,7 +505,13 @@ fun PersonalInfoBmrDialog(
                 // Height input
                 OutlinedTextField(
                     value = height,
-                    onValueChange = { height = it },
+                    onValueChange = { newValue ->
+                        height = newValue
+                        if (isPositiveInt(newValue.text)) {
+                            isHeightError = false
+                        }
+                    },
+                    isError = isHeightError,
                     label = { Text(stringResource(R.string.calculate_bmr_height_hint)) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -449,11 +525,40 @@ fun PersonalInfoBmrDialog(
                                     height =
                                         height.copy(selection = TextRange(0, height.text.length))
                                 }
+                            } else {
+                                isHeightError = height.text.isEmpty() or !isPositiveInt(height.text)
                             }
                         },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            if (height.text.isEmpty()) {
+                                Toast.makeText(context,
+                                    context.getString(R.string.error_empty), Toast.LENGTH_SHORT).show()
+                            } else {
+                                isHeightError = !isPositiveInt(height.text)
+                                if (!isHeightError) {
+
+                                    isAgeError = age.text.isEmpty() or !isPositiveInt(age.text)
+                                    isWeightError = weight.text.isEmpty() or !isPositiveInt(weight.text)
+
+                                    if (!isAgeError and !isWeightError) {
+                                        keyboardController?.hide()
+                                        focusManager.clearFocus()
+                                    } else {
+                                        Toast.makeText(context,
+                                            context.getString(R.string.error_check_input), Toast.LENGTH_SHORT).show()
+                                    }
+
+                                } else {
+                                    Toast.makeText(context,
+                                        context.getString(R.string.error_non_positive_integer), Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
                     ),
                     maxLines = 1
                 )
@@ -501,32 +606,41 @@ fun PersonalInfoBmrDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    // Calculate BMR using Mifflin-St Jeor Equation
-                    val ageVal = age.text.toIntOrNull() ?: 30
-                    val weightVal = weight.text.toIntOrNull() ?: 70
-                    val heightVal = height.text.toIntOrNull() ?: 170
+                    isAgeError = age.text.isEmpty() or !isPositiveInt(age.text)
+                    isWeightError = weight.text.isEmpty() or !isPositiveInt(weight.text)
+                    isHeightError = height.text.isEmpty() or !isPositiveInt(height.text)
 
-                    // Calculate base BMR
-                    val baseBmr = if (isMale) {
-                        (10 * weightVal) + (6.25 * heightVal) - (5 * ageVal) + 5
+                    if (!isAgeError and !isWeightError and !isHeightError) {
+                        // Calculate BMR using Mifflin-St Jeor Equation
+                        val ageVal = age.text.toIntOrNull() ?: 30
+                        val weightVal = weight.text.toIntOrNull() ?: 70
+                        val heightVal = height.text.toIntOrNull() ?: 170
+
+                        // Calculate base BMR
+                        val baseBmr = if (isMale) {
+                            (10 * weightVal) + (6.25 * heightVal) - (5 * ageVal) + 5
+                        } else {
+                            (10 * weightVal) + (6.25 * heightVal) - (5 * ageVal) - 161
+                        }
+
+                        // Apply activity multiplier to get TDEE (Total Daily Energy Expenditure)
+                        val tdee = (baseBmr * selectedExerciseLevel.multiplier).toInt()
+
+                        onSave(
+                            PersonalInfo(
+                                isMale = isMale,
+                                age = ageVal,
+                                weight = weightVal,
+                                height = heightVal,
+                                exerciseLevel = selectedExerciseLevel
+                            ),
+                            tdee
+                        )
+                        onDismiss()
                     } else {
-                        (10 * weightVal) + (6.25 * heightVal) - (5 * ageVal) - 161
+                        Toast.makeText(context,
+                            context.getString(R.string.error_check_input), Toast.LENGTH_SHORT).show()
                     }
-
-                    // Apply activity multiplier to get TDEE (Total Daily Energy Expenditure)
-                    val tdee = (baseBmr * selectedExerciseLevel.multiplier).toInt()
-
-                    onSave(
-                        PersonalInfo(
-                            isMale = isMale,
-                            age = ageVal,
-                            weight = weightVal,
-                            height = heightVal,
-                            exerciseLevel = selectedExerciseLevel
-                        ),
-                        tdee
-                    )
-                    onDismiss()
                 }
             ) {
                 Text(stringResource(R.string.calculate_button))
