@@ -8,7 +8,7 @@
     <string name="dark_mode_follow_system">Follow system</string>
     <string name="dark_mode_always_off">Always off</string>
     <string name="dark_mode_always_on">Always on</string>
-    <string name="bmr_option_default">Default BMR</string>
+    <string name="bmr_option_default">Default value</string>
     <string name="bmr_option_calculate">Calculate from personal info</string>
     <string name="bmr_option_custom">Custom value</string>
     <string name="exercise_level_sedentary">Sedentary</string>

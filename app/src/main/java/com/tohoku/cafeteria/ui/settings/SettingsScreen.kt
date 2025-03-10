@@ -156,11 +156,9 @@ fun SettingsScreen(
                                         viewModel.setCustomBmrValue(2000)
                                     }
                                     BmrCalculationOption.CALCULATE -> {
-                                        viewModel.setBmrOption(option)
                                         showPersonalInfoDialog = true
                                     }
                                     BmrCalculationOption.CUSTOM -> {
-                                        viewModel.setBmrOption(option)
                                         showBmrInputDialog = true
                                     }
                                 }
@@ -175,7 +173,9 @@ fun SettingsScreen(
             if (showBmrInputDialog) {
                 CustomBmrInputDialog(
                     initialValue = settingsState.customBmrValue,
-                    onSave = { viewModel.setCustomBmrValue(it) },
+                    onSave = {
+                        viewModel.setBmrOption(BmrCalculationOption.CUSTOM)
+                        viewModel.setCustomBmrValue(it) },
                     onDismiss = { showBmrInputDialog = false }
                 )
             }
@@ -184,6 +184,7 @@ fun SettingsScreen(
                 PersonalInfoBmrDialog(
                     initialPersonalInfo = settingsState.personalInfo,
                     onSave = { personalInfo, bmrValue ->
+                        viewModel.setBmrOption(BmrCalculationOption.CALCULATE)
                         viewModel.setPersonalInfo(personalInfo)
                         viewModel.setCustomBmrValue(bmrValue) },
                     onDismiss = { showPersonalInfoDialog = false }
@@ -612,9 +613,9 @@ fun PersonalInfoBmrDialog(
 
                     if (!isAgeError and !isWeightError and !isHeightError) {
                         // Calculate BMR using Mifflin-St Jeor Equation
-                        val ageVal = age.text.toIntOrNull() ?: 30
-                        val weightVal = weight.text.toIntOrNull() ?: 70
-                        val heightVal = height.text.toIntOrNull() ?: 170
+                        val ageVal = age.text.toInt()
+                        val weightVal = weight.text.toInt()
+                        val heightVal = height.text.toInt()
 
                         // Calculate base BMR
                         val baseBmr = if (isMale) {
