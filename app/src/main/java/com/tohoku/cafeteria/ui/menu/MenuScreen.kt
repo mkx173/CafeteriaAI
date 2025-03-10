@@ -45,7 +45,7 @@ fun MenuScreen(
                 title = { Text(text = stringResource(R.string.tab_menu)) },
                 actions = {
                     IconButton(onClick = { viewModel.refreshMenu() }) {
-                        Icon(Icons.Filled.Refresh, "Trigger Refresh")
+                        Icon(Icons.Filled.Refresh, stringResource(R.string.refresh_button))
                     }
                 }
             )

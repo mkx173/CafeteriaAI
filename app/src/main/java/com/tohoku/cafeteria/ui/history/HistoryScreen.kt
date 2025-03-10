@@ -38,7 +38,7 @@ fun HistoryScreen(
         Box(
             modifier = Modifier.padding(innerPadding)
         ) {
-            Text(text = "This page is not implemented")
+            Text(text = "This page is not yet implemented")
         }
 
     }

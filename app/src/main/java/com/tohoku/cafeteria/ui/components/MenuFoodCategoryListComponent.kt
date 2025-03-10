@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,7 +39,7 @@ fun MenuFoodCategoryListComponent(
     categoryData: List<FoodCategory>
 ) {
     LazyColumn(
-        modifier = modifier.fillMaxSize().padding(horizontal = 8.dp),
+        modifier = modifier.fillMaxSize().padding(horizontal = dimensionResource(R.dimen.padding_medium)),
     ) {
         if (categoryData.isNotEmpty()) {
             item {
@@ -50,10 +51,10 @@ fun MenuFoodCategoryListComponent(
         }
         items(categoryData) { foodCategory ->
             Column(
-                modifier = Modifier.padding(horizontal = 8.dp).padding(top = 16.dp)
+                modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_medium))
             ) {
                 Text(
-                    modifier = Modifier.padding(vertical = 8.dp),
+                    modifier = Modifier.padding(vertical = dimensionResource(R.dimen.padding_small)),
                     text = foodCategory.category,
                     style = MaterialTheme.typography.titleLarge,
                 )
@@ -61,12 +62,12 @@ fun MenuFoodCategoryListComponent(
                     Surface (
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 4.dp),
-                        shape = RoundedCornerShape(12.dp),
+                            .padding(vertical = dimensionResource(R.dimen.padding_xsmall)),
+                        shape = MaterialTheme.shapes.medium,
                         tonalElevation = 1.dp
                     ) {
                         ListItem(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                            modifier = Modifier.fillMaxWidth().padding(vertical = dimensionResource(R.dimen.padding_small)),
                             headlineContent = {
                                 Text(
                                     text = foodItem.name
@@ -75,7 +76,7 @@ fun MenuFoodCategoryListComponent(
                             leadingContent = {
                                 Image(
                                     modifier = Modifier
-                                        .size(64.dp)
+                                        .size(dimensionResource(R.dimen.size_icon))
                                         .clip(CircleShape),
                                     painter = painterResource(R.drawable.sample_food),
                                     contentDescription = foodItem.name,
@@ -97,7 +98,7 @@ fun MenuFoodCategoryListComponent(
             }
         }
         item {
-            Spacer(modifier = Modifier.size(4.dp))
+            Spacer(modifier = Modifier.size(dimensionResource(R.dimen.padding_xsmall)))
         }
     }
 }

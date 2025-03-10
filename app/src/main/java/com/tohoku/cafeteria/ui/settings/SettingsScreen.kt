@@ -1,11 +1,10 @@
 package com.tohoku.cafeteria.ui.settings
 
-import android.app.Person
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,14 +22,17 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,39 +41,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.data.repository.PersonalInfo
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 // Enum class for dark mode options
-enum class DarkModeOption(val label: String) {
-    FOLLOW_SYSTEM("Follow system"),
-    LIGHT("Always off"),
-    DARK("Always on")
+enum class DarkModeOption(@StringRes val label: Int) {
+    FOLLOW_SYSTEM(R.string.dark_mode_follow_system),
+    LIGHT(R.string.dark_mode_always_off),
+    DARK(R.string.dark_mode_always_on)
 }
 
-enum class BmrCalculationOption(val label: String) {
-    DEFAULT("Default BMR"),
-    CALCULATE("Calculate from personal info"),
-    CUSTOM("Custom value")
+enum class BmrCalculationOption(@StringRes val label: Int) {
+    DEFAULT(R.string.bmr_option_default),
+    CALCULATE(R.string.bmr_option_calculate),
+    CUSTOM(R.string.bmr_option_custom)
 }
 
-enum class ExerciseLevel(val label: String, val multiplier: Double) {
-    SEDENTARY("Sedentary (little or no exercise)", 1.2),
-    LIGHT("Lightly active (light exercise 1-3 days/week)", 1.375),
-    MODERATE("Moderately active (moderate exercise 3-5 days/week)", 1.55),
-    ACTIVE("Very active (hard exercise 6-7 days/week)", 1.725),
-    EXTRA_ACTIVE("Extra active (very hard exercise & physical job)", 1.9)
+enum class ExerciseLevel(@StringRes val label: Int, val multiplier: Double) {
+    SEDENTARY(R.string.exercise_level_sedentary, 1.2),
+    LIGHT(R.string.exercise_level_lightly_active, 1.375),
+    MODERATE(R.string.exercise_level_moderately_active, 1.55),
+    ACTIVE(R.string.exercise_level_very_active, 1.725),
+    EXTRA_ACTIVE(R.string.exercise_level_extra_active, 1.9)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -97,14 +98,14 @@ fun SettingsScreen(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(8.dp)
+                .padding(dimensionResource(R.dimen.padding_small))
                 .fillMaxSize()
         ) {
             ListItem(
                 modifier = Modifier.fillMaxWidth(),
                 headlineContent = {
                     Text(
-                        text = "Customization",
+                        text = stringResource(R.string.settings_customization),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -118,19 +119,22 @@ fun SettingsScreen(
                         .fillMaxWidth()
                         .clickable { expandedBmrDropdown = true },
                     headlineContent = {
-                        Text(text = "Basal Metabolic Rate (BMR)")
+                        Text(text = stringResource(R.string.settings_bmr))
                     },
                     supportingContent = {
                         Text(
                             text = when (settingsState.bmrOption) {
-                                BmrCalculationOption.DEFAULT -> "Default"
-                                BmrCalculationOption.CALCULATE -> "Calculated from personal info"
-                                BmrCalculationOption.CUSTOM -> "Custom value"
+                                BmrCalculationOption.DEFAULT -> stringResource(R.string.bmr_option_default)
+                                BmrCalculationOption.CALCULATE -> stringResource(R.string.bmr_option_calculate)
+                                BmrCalculationOption.CUSTOM -> stringResource(R.string.bmr_option_custom)
                             }
                         )
                     },
                     trailingContent = {
-                        Text(text = "${settingsState.customBmrValue} kcal")
+                        Text(text = stringResource(
+                            R.string.settings_kcal_display,
+                            settingsState.customBmrValue
+                        ))
                     }
                 )
                 DropdownMenu(
@@ -140,7 +144,7 @@ fun SettingsScreen(
                 ) {
                     BmrCalculationOption.entries.forEach { option ->
                         DropdownMenuItem(
-                            text = { Text(option.label) },
+                            text = { Text(stringResource(option.label)) },
                             onClick = {
                                 when (option) {
                                     BmrCalculationOption.DEFAULT -> {
@@ -186,7 +190,7 @@ fun SettingsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 headlineContent = {
                     Text(
-                        text = "Appearance",
+                        text = stringResource(R.string.settings_appearance),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -198,11 +202,11 @@ fun SettingsScreen(
                         .fillMaxWidth()
                         .clickable { expandedDropdown = true },
                     headlineContent = {
-                        Text(text = "Dark mode")
+                        Text(text = stringResource(R.string.settings_dark_mode))
                     },
                     supportingContent = {
                         Text(
-                            text = settingsState.darkModeOption.label,
+                            text = stringResource(settingsState.darkModeOption.label),
                         )
                     },
                 )
@@ -213,7 +217,7 @@ fun SettingsScreen(
                 ) {
                     DarkModeOption.entries.forEach { option ->
                         DropdownMenuItem(
-                            text = { Text(option.label) },
+                            text = { Text(stringResource(option.label)) },
                             onClick = {
                                 viewModel.setDarkModeOption(option)
                                 expandedDropdown = false
@@ -229,7 +233,7 @@ fun SettingsScreen(
                         viewModel.setDynamicColorEnabled(!settingsState.dynamicColorEnabled)
                     },
                 headlineContent = {
-                    Text(text = "Dynamic Color")
+                    Text(text = stringResource(R.string.settings_dynamic_color))
                 },
                 trailingContent = {
                     Switch(
@@ -255,12 +259,12 @@ fun CustomBmrInputDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Enter Custom BMR") },
+        title = { Text(stringResource(R.string.enter_custom_bmr)) },
         text = {
             OutlinedTextField(
                 value = bmrInput,
                 onValueChange = { bmrInput = it },
-                label = { Text("Calories (kcal)") },
+                label = { Text(stringResource(R.string.enter_custom_bmr_hint)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Done
@@ -283,7 +287,8 @@ fun CustomBmrInputDialog(
                             // Use LaunchedEffect to delay the selection until after composition
                             coroutineScope.launch {
                                 delay(10) // Small delay to ensure the TextField is ready
-                                bmrInput = bmrInput.copy(selection = TextRange(0, bmrInput.text.length))
+                                bmrInput =
+                                    bmrInput.copy(selection = TextRange(0, bmrInput.text.length))
                             }
                         }
                     },
@@ -301,14 +306,14 @@ fun CustomBmrInputDialog(
                     onDismiss()
                 }
             ) {
-                Text("Save")
+                Text(stringResource(R.string.save_button))
             }
         },
         dismissButton = {
             TextButton(
                 onClick = onDismiss
             ) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel_button))
             }
         },
         modifier = modifier
@@ -326,8 +331,11 @@ fun PersonalInfoBmrDialog(
     var age by remember { mutableStateOf(TextFieldValue(initialPersonalInfo.age.toString())) }
     var weight by remember { mutableStateOf(TextFieldValue(initialPersonalInfo.weight.toString())) }
     var height by remember { mutableStateOf(TextFieldValue(initialPersonalInfo.height.toString())) }
-    var isMale by remember { mutableStateOf(initialPersonalInfo.isMale) }
     var selectedExerciseLevel by remember { mutableStateOf(initialPersonalInfo.exerciseLevel) }
+
+    var isMale by remember { mutableStateOf(initialPersonalInfo.isMale) }
+    val genderOptions = listOf(stringResource(R.string.male), stringResource(R.string.female))
+    var genderSelectedIndex by remember { mutableIntStateOf(if (isMale) 0 else 1) }
 
     val coroutineScope = rememberCoroutineScope()
     val ageFocus = remember { FocusRequester() }
@@ -336,46 +344,45 @@ fun PersonalInfoBmrDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Calculate BMR") },
+        title = { Text(stringResource(R.string.calculate_bmr)) },
         text = {
-            Column(modifier = Modifier.padding(8.dp)) {
+            Column {
                 // Gender selection
                 Text(
-                    text = "Gender",
+                    text = stringResource(R.string.gender),
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(bottom = 4.dp)
                 )
-                Row {
-                    RadioButton(
-                        selected = isMale,
-                        onClick = { isMale = true }
-                    )
-                    Text(
-                        text = "Male",
-                        modifier = Modifier
-                            .clickable { isMale = true }
-                            .padding(start = 4.dp, end = 16.dp, top = 12.dp)
-                    )
-                    RadioButton(
-                        selected = !isMale,
-                        onClick = { isMale = false }
-                    )
-                    Text(
-                        text = "Female",
-                        modifier = Modifier
-                            .clickable { isMale = false }
-                            .padding(start = 4.dp, top = 12.dp)
-                    )
+                SingleChoiceSegmentedButtonRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = dimensionResource(R.dimen.padding_xsmall))
+                ) {
+                    genderOptions.forEachIndexed { index, label ->
+                        SegmentedButton(
+                            shape = SegmentedButtonDefaults.itemShape(
+                                index = index,
+                                count = genderOptions.size
+                            ),
+                            colors = SegmentedButtonDefaults.colors(
+                                activeContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                inactiveContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                            ),
+                            onClick = {
+                                genderSelectedIndex = index
+                                isMale = genderSelectedIndex == 0 },
+                            selected = index == genderSelectedIndex,
+                            label = { Text(text = label) }
+                        )
+                    }
                 }
-
                 // Age input
                 OutlinedTextField(
                     value = age,
                     onValueChange = { age = it },
-                    label = { Text("Age (years)") },
+                    label = { Text(stringResource(R.string.calculate_bmr_age_hint)) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 4.dp)
+                        .padding(vertical = dimensionResource(R.dimen.padding_xsmall))
                         .focusRequester(ageFocus)
                         .onFocusChanged {
                             if (it.isFocused) {
@@ -400,17 +407,18 @@ fun PersonalInfoBmrDialog(
                 OutlinedTextField(
                     value = weight,
                     onValueChange = { weight = it },
-                    label = { Text("Weight (kg)") },
+                    label = { Text(stringResource(R.string.calculate_bmr_weight_hint)) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 4.dp)
+                        .padding(vertical = dimensionResource(R.dimen.padding_xsmall))
                         .focusRequester(weightFocus)
                         .onFocusChanged {
                             if (it.isFocused) {
                                 // Use LaunchedEffect to delay the selection until after composition
                                 coroutineScope.launch {
                                     delay(10) // Small delay to ensure the TextField is ready
-                                    weight = weight.copy(selection = TextRange(0, weight.text.length))
+                                    weight =
+                                        weight.copy(selection = TextRange(0, weight.text.length))
                                 }
                             }
                         },
@@ -428,17 +436,18 @@ fun PersonalInfoBmrDialog(
                 OutlinedTextField(
                     value = height,
                     onValueChange = { height = it },
-                    label = { Text("Height (cm)") },
+                    label = { Text(stringResource(R.string.calculate_bmr_height_hint)) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 4.dp)
+                        .padding(vertical = dimensionResource(R.dimen.padding_xsmall))
                         .focusRequester(heightFocus)
                         .onFocusChanged {
                             if (it.isFocused) {
                                 // Use LaunchedEffect to delay the selection until after composition
                                 coroutineScope.launch {
                                     delay(10) // Small delay to ensure the TextField is ready
-                                    height = height.copy(selection = TextRange(0, height.text.length))
+                                    height =
+                                        height.copy(selection = TextRange(0, height.text.length))
                                 }
                             }
                         },
@@ -457,16 +466,17 @@ fun PersonalInfoBmrDialog(
                         onExpandedChange = { expanded = it }
                     ) {
                         OutlinedTextField(
-                            value = selectedExerciseLevel.label,
+                            value = stringResource(selectedExerciseLevel.label),
                             onValueChange = { },
                             readOnly = true,
-                            label = { Text("Exercise Level") },
+                            label = { Text(stringResource(R.string.calculate_bmr_exercise_level_hint)) },
                             trailingIcon = {
                                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                             },
                             colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .padding(vertical = dimensionResource(R.dimen.padding_xsmall))
                                 .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                         )
 
@@ -476,7 +486,7 @@ fun PersonalInfoBmrDialog(
                         ) {
                             ExerciseLevel.entries.forEach { level ->
                                 DropdownMenuItem(
-                                    text = { Text(level.label) },
+                                    text = { Text(stringResource(level.label)) },
                                     onClick = {
                                         selectedExerciseLevel = level
                                         expanded = false
@@ -519,14 +529,14 @@ fun PersonalInfoBmrDialog(
                     onDismiss()
                 }
             ) {
-                Text("Calculate")
+                Text(stringResource(R.string.calculate_button))
             }
         },
         dismissButton = {
             TextButton(
                 onClick = onDismiss
             ) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel_button))
             }
         },
         modifier = modifier

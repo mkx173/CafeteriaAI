@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,19 +33,17 @@ fun MenuCarouselComponent(
     title: String,
     items: List<MenuItem>
 ) {
-    Column(
-        modifier = modifier.padding(horizontal = 8.dp)
-    ) {
+    Column {
         Text(
-            modifier = Modifier.padding(vertical = 8.dp),
+            modifier = modifier.padding(vertical = dimensionResource(R.dimen.padding_small)),
             text = title,
             style = MaterialTheme.typography.titleLarge,
         )
 
         HorizontalMultiBrowseCarousel(
             state = rememberCarouselState { items.count() },
-            preferredItemWidth = 186.dp,
-            itemSpacing = 8.dp
+            preferredItemWidth = dimensionResource(R.dimen.width_carousel),
+            itemSpacing = dimensionResource(R.dimen.padding_small)
         ) { i ->
             val item = items[i]
             Box(
@@ -52,7 +51,7 @@ fun MenuCarouselComponent(
             ) {
                 Image(
                     painter = painterResource(R.drawable.sample_food),
-                    modifier = Modifier.height(186.dp).maskClip(MaterialTheme.shapes.large),
+                    modifier = Modifier.height(dimensionResource(R.dimen.width_carousel)).maskClip(MaterialTheme.shapes.large),
                     contentDescription = item.name,
                     contentScale = ContentScale.Crop,
                 )
@@ -62,21 +61,9 @@ fun MenuCarouselComponent(
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier
                         .align(Alignment.BottomStart)
-                        .padding(8.dp)
-                        .padding(horizontal = 6.dp, vertical = 4.dp)
+                        .padding(dimensionResource(R.dimen.padding_small))
+                        .padding(dimensionResource(R.dimen.padding_xsmall))
                         .graphicsLayer {
-                            // Fade the text in once the carousel item's size is large enough to
-                            // display the entire text
-//                            alpha =
-//                                lerp(
-//                                    0f,
-//                                    1f,
-//                                    max(
-//                                        size.width - (carouselItemInfo.maxSize) +
-//                                                carouselItemInfo.size,
-//                                        0f
-//                                    ) / size.width
-//                                )
                             // Translate the text to be pinned to the left side of the item's mask
                             translationX = carouselItemInfo.maskRect.left
                         }
