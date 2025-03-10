@@ -22,7 +22,6 @@ abstract class BaseAppContainer(private val context: Context) : AppContainer {
     }
 }
 
-
 class DefaultAppContainer(context: Context) : BaseAppContainer(context) {
     private val BASE_URL =
         "https://android-kotlin-fun-mars-server.appspot.com"

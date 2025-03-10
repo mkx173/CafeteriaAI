@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.coil.compose)
+    implementation(libs.androidx.core.splashscreen)
 
     // Retrofit
     implementation(libs.retrofit2.kotlinx.serialization.converter)

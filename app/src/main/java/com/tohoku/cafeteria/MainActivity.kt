@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tohoku.cafeteria.data.repository.SettingsRepository
@@ -25,21 +26,23 @@ class MainActivity : ComponentActivity() {
     private lateinit var settingsRepository: SettingsRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Keep splash screen visible until we're done initializing
+        val splashScreen = installSplashScreen()
+
         // Get repository before super.onCreate to load theme settings early
         settingsRepository = (application as CafeteriaApplication).appContainer.settingsRepository
-
-        // Load theme settings synchronously, blocking only momentarily
-        val settingsState = runBlocking {
-            settingsRepository.getSettings().first()
-        }
+        val initialSettings = settingsRepository.settingsState.value
 
         // Set the night mode based on saved preferences BEFORE super.onCreate
-        val nightMode = when (settingsState.darkModeOption) {
+        val nightMode = when (initialSettings.darkModeOption) {
             DarkModeOption.DARK -> AppCompatDelegate.MODE_NIGHT_YES
             DarkModeOption.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
             DarkModeOption.FOLLOW_SYSTEM -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
         }
         AppCompatDelegate.setDefaultNightMode(nightMode)
+
+        // Allow splash screen to hide when ready
+        splashScreen.setKeepOnScreenCondition { false }
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

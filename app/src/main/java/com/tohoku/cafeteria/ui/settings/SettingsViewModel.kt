@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.tohoku.cafeteria.CafeteriaApplication
+import com.tohoku.cafeteria.data.repository.PersonalInfo
 import com.tohoku.cafeteria.data.repository.SettingsRepository
 import com.tohoku.cafeteria.data.repository.SettingsState
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,12 +19,7 @@ import kotlinx.coroutines.runBlocking
 
 class SettingsViewModel(private val settingsRepository: SettingsRepository) : ViewModel() {
     // Expose settings as flows
-    val settingsState: StateFlow<SettingsState> = settingsRepository.getSettings()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = runBlocking { settingsRepository.getSettings().first() }
-        )
+    val settingsState: StateFlow<SettingsState> = settingsRepository.settingsState
 
     // Update functions that delegate to the repository
     fun setDarkModeOption(option: DarkModeOption) {
@@ -35,6 +31,24 @@ class SettingsViewModel(private val settingsRepository: SettingsRepository) : Vi
     fun setDynamicColorEnabled(enabled: Boolean) {
         viewModelScope.launch {
             settingsRepository.setDynamicColorEnabled(enabled)
+        }
+    }
+
+    fun setBmrOption(option: BmrCalculationOption) {
+        viewModelScope.launch {
+            settingsRepository.setBmrOption(option)
+        }
+    }
+
+    fun setCustomBmrValue(value: Int) {
+        viewModelScope.launch {
+            settingsRepository.setCustomBmrValue(value)
+        }
+    }
+
+    fun setPersonalInfo(personalInfo: PersonalInfo) {
+        viewModelScope.launch {
+            settingsRepository.setPersonalInfo(personalInfo)
         }
     }
 
