@@ -477,7 +477,7 @@ fun PersonalInfoBmrDialog(
                                         weight.copy(selection = TextRange(0, weight.text.length))
                                 }
                             } else {
-                                isWeightError = weight.text.isEmpty() or !isPositiveInt(weight.text)
+                                isWeightError = weight.text.isEmpty() || !isPositiveInt(weight.text)
                             }
                         },
                     keyboardOptions = KeyboardOptions(
@@ -527,7 +527,7 @@ fun PersonalInfoBmrDialog(
                                         height.copy(selection = TextRange(0, height.text.length))
                                 }
                             } else {
-                                isHeightError = height.text.isEmpty() or !isPositiveInt(height.text)
+                                isHeightError = height.text.isEmpty() || !isPositiveInt(height.text)
                             }
                         },
                     keyboardOptions = KeyboardOptions(
@@ -543,10 +543,10 @@ fun PersonalInfoBmrDialog(
                                 isHeightError = !isPositiveInt(height.text)
                                 if (!isHeightError) {
 
-                                    isAgeError = age.text.isEmpty() or !isPositiveInt(age.text)
-                                    isWeightError = weight.text.isEmpty() or !isPositiveInt(weight.text)
+                                    isAgeError = age.text.isEmpty() || !isPositiveInt(age.text)
+                                    isWeightError = weight.text.isEmpty() || !isPositiveInt(weight.text)
 
-                                    if (!isAgeError and !isWeightError) {
+                                    if (!isAgeError && !isWeightError) {
                                         keyboardController?.hide()
                                         focusManager.clearFocus()
                                     } else {
@@ -607,11 +607,11 @@ fun PersonalInfoBmrDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    isAgeError = age.text.isEmpty() or !isPositiveInt(age.text)
-                    isWeightError = weight.text.isEmpty() or !isPositiveInt(weight.text)
-                    isHeightError = height.text.isEmpty() or !isPositiveInt(height.text)
+                    isAgeError = age.text.isEmpty() || !isPositiveInt(age.text)
+                    isWeightError = weight.text.isEmpty() || !isPositiveInt(weight.text)
+                    isHeightError = height.text.isEmpty() || !isPositiveInt(height.text)
 
-                    if (!isAgeError and !isWeightError and !isHeightError) {
+                    if (!isAgeError && !isWeightError && !isHeightError) {
                         // Calculate BMR using Mifflin-St Jeor Equation
                         val ageVal = age.text.toInt()
                         val weightVal = weight.text.toInt()

@@ -39,4 +39,12 @@
     <string name="error_non_positive_integer">Please enter a positive integer</string>
     <string name="error_empty">Please enter a value</string>
     <string name="error_check_input">Please check your input and try again</string>
+    <string name="add_to_cart">Add to cart</string>
+    <string name="kcal">%1$s kcal</string>
+    <string name="kcal_range">%1$s - %2$s kcal</string>
+    <string name="price">JP¥%1$s</string>
+    <string name="price_range">JP¥%1$s - %2$s</string>
+    <string name="try_again">Try again</string>
+    <string name="unknown_error_occurred">Unknown error occurred</string>
+    <string name="menu_unavailable">The menu is not yet available</string>
 </resources>

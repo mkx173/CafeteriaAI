@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.tohoku.cafeteria.CafeteriaApplication
+import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.data.repository.MenuRepository
 import com.tohoku.cafeteria.domain.model.FoodCategory
 import com.tohoku.cafeteria.domain.model.MenuItem
@@ -16,13 +17,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 data class MenuUiState(
-    val menuData: List<FoodCategory> = emptyList(),
+    val menuData: List<FoodCategory>? = null,
     val isRefreshing: Boolean = false,
+    val isErrorNew: Boolean = false,
     val errorMessage: String? = null
 )
 
 class MenuViewModel(
-    private val menuRepository: MenuRepository
+    private val menuRepository: MenuRepository,
+    private val application: CafeteriaApplication
 ) : ViewModel() {
     private val _uiState = mutableStateOf(MenuUiState())
     val uiState: State<MenuUiState> = _uiState
@@ -33,37 +36,50 @@ class MenuViewModel(
 
     fun refreshMenu()  {
         // Clear any previous error and set refreshing state.
-        _uiState.value = _uiState.value.copy(isRefreshing = true, errorMessage = null)
+        _uiState.value = _uiState.value.copy(isRefreshing = true)
         viewModelScope.launch {
             try {
                 // Simulate network delay.
                 delay(1000)
                 // Simulate a refresh failure 30% of the time.
-//                if (Math.random() < 0.3) {
-//                    throw Exception("Failed to refresh data. Please try again.")
-//                }
-                // Update the state with fetched data.
-                _uiState.value = _uiState.value.copy(menuData = menuRepository.getMenu())
+                if (Math.random() in 0.15..0.3) {
+                    throw Exception(application.getString(R.string.unknown_error_occurred))
+                } else if (Math.random() < 0.15) {
+                    _uiState.value = _uiState.value.copy(
+                        menuData = listOf(),
+                        errorMessage = application.getString(R.string.menu_unavailable),
+                        isErrorNew = true
+                    )
+                } else {
+                    _uiState.value = _uiState.value.copy(
+                        menuData = menuRepository.getMenu(),
+                        errorMessage = null,
+                        isErrorNew = false
+                    )
+                }
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(errorMessage = e.message ?: "Unknown error occurred.")
+                _uiState.value = _uiState.value.copy(
+                    errorMessage = e.message ?: application.getString(R.string.unknown_error_occurred),
+                    isErrorNew = true
+                )
             } finally {
                 _uiState.value = _uiState.value.copy(isRefreshing = false)
             }
         }
     }
 
-    fun clearErrorMessage() {
-        _uiState.value = _uiState.value.copy(errorMessage = null)
+    fun clearNewErrorFlag() {
+        _uiState.value = _uiState.value.copy(isErrorNew = false)
     }
 
     // Retrieve items by category name.
     fun getItemsByCategory(categoryName: String): List<MenuItem> {
-        return _uiState.value.menuData.find { it.category == categoryName }?.items ?: emptyList()
+        return _uiState.value.menuData?.find { it.category == categoryName }?.items ?: emptyList()
     }
 
     // Retrieve a menu item by its foodId.
     fun getItemById(id: Int): MenuItem? {
-        return _uiState.value.menuData.flatMap { it.items }.firstOrNull { it.foodId == id }
+        return _uiState.value.menuData?.flatMap { it.items }?.firstOrNull { it.foodId == id }
     }
 
     companion object {
@@ -71,7 +87,7 @@ class MenuViewModel(
             initializer {
                 val application = (this[APPLICATION_KEY] as CafeteriaApplication)
                 val menuRepository = application.appContainer.menuRepository
-                MenuViewModel(menuRepository = menuRepository)
+                MenuViewModel(menuRepository = menuRepository, application = application)
             }
         }
     }
