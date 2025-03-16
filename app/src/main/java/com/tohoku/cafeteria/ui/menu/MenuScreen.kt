@@ -26,10 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tohoku.cafeteria.R
-import com.tohoku.cafeteria.ui.components.MenuFoodCategoryListComponent
 import com.tohoku.cafeteria.ui.navigation.SnackbarManager
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
 
@@ -90,7 +88,7 @@ fun MenuScreen(
                     )
                 }
                 else -> {
-                    MenuFoodCategoryListComponent(categoryData = uiState.menuData)
+                    MenuFoodDisplay(categoryData = uiState.menuData)
                 }
             }
         }

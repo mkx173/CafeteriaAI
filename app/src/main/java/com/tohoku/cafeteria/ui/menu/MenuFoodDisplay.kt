@@ -1,4 +1,4 @@
-package com.tohoku.cafeteria.ui.components
+package com.tohoku.cafeteria.ui.menu
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -44,16 +44,17 @@ import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.domain.model.FoodCategory
 import com.tohoku.cafeteria.domain.model.MenuItem
 import com.tohoku.cafeteria.domain.model.NutritionData
+import com.tohoku.cafeteria.ui.components.MenuCarouselComponent
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuFoodCategoryListComponent(
+fun MenuFoodDisplay(
     modifier: Modifier = Modifier,
     categoryData: List<FoodCategory>?
 ) {
-    // Add at the top of MenuFoodCategoryListComponent:
+    // Add at the top of MenuFoodDisplay:
     val scope = rememberCoroutineScope()
     var selectedFoodItem by remember { mutableStateOf<MenuItem?>(null) }
     val sheetState = rememberModalBottomSheetState()
@@ -182,9 +183,9 @@ fun MenuFoodCategoryListComponent(
 
 @Preview(showBackground = true)
 @Composable
-fun MenuFoodCategoryListComponentPreview() {
+fun MenuFoodDisplayPreview() {
     CafeteriaAITheme {
-        MenuFoodCategoryListComponent(
+        MenuFoodDisplay(
             categoryData = listOf(
                 FoodCategory(
                     category = "Burgers",
