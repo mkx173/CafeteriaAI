@@ -52,6 +52,18 @@ class SettingsViewModel(private val settingsRepository: SettingsRepository) : Vi
         }
     }
 
+    fun setFoodPreferences(foodPreferences: String) {
+        viewModelScope.launch {
+            settingsRepository.setFoodPreferences(foodPreferences)
+        }
+    }
+
+    fun setFoodAllergies(foodAllergies: String) {
+        viewModelScope.launch {
+            settingsRepository.setFoodAllergies(foodAllergies)
+        }
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

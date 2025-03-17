@@ -90,6 +90,8 @@ fun SettingsScreen(
     var expandedBmrDropdown by remember { mutableStateOf(false) }
     var showBmrInputDialog by remember { mutableStateOf(false) }
     var showPersonalInfoDialog by remember { mutableStateOf(false) }
+    var showFoodPreferencesDialog by remember { mutableStateOf(false) }
+    var showFoodAllergiesDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier,
@@ -188,6 +190,52 @@ fun SettingsScreen(
                         viewModel.setPersonalInfo(personalInfo)
                         viewModel.setCustomBmrValue(bmrValue) },
                     onDismiss = { showPersonalInfoDialog = false }
+                )
+            }
+
+            ListItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        showFoodPreferencesDialog = true
+                    },
+                headlineContent = {
+                    Text(text = stringResource(R.string.food_preferences))
+                }
+            )
+
+            if (showFoodPreferencesDialog) {
+                CustomStringInputDialog(
+                    initialValue = settingsState.foodPreferences,
+                    title = stringResource(R.string.food_preferences),
+                    textFieldLabel = stringResource(R.string.your_preferences),
+                    onSave = {
+                        viewModel.setFoodPreferences(it)
+                    },
+                    onDismiss = { showFoodPreferencesDialog = false }
+                )
+            }
+
+            ListItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        showFoodAllergiesDialog = true
+                    },
+                headlineContent = {
+                    Text(text = stringResource(R.string.food_allergies))
+                }
+            )
+
+            if (showFoodAllergiesDialog) {
+                CustomStringInputDialog(
+                    initialValue = settingsState.foodAllergies,
+                    title = stringResource(R.string.food_allergies),
+                    textFieldLabel = stringResource(R.string.list_food_allergies),
+                    onSave = {
+                        viewModel.setFoodAllergies(it)
+                    },
+                    onDismiss = { showFoodAllergiesDialog = false }
                 )
             }
 
@@ -427,7 +475,7 @@ fun PersonalInfoBmrDialog(
                                     age = age.copy(selection = TextRange(0, age.text.length))
                                 }
                             } else {
-                                isAgeError = age.text.isEmpty() or!isPositiveInt(age.text)
+                                isAgeError = age.text.isEmpty() or !isPositiveInt(age.text)
                             }
                         },
                     keyboardOptions = KeyboardOptions(
@@ -645,6 +693,59 @@ fun PersonalInfoBmrDialog(
                 }
             ) {
                 Text(stringResource(R.string.calculate_button))
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss
+            ) {
+                Text(stringResource(R.string.cancel_button))
+            }
+        },
+        modifier = modifier
+    )
+}
+
+@Composable
+fun CustomStringInputDialog(
+    initialValue: String,
+    title: String,
+    textFieldLabel: String,
+    onSave: (String) -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var inputString by remember { mutableStateOf(initialValue) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title) },
+        text = {
+            OutlinedTextField(
+                value = inputString,
+                onValueChange = { inputString = it },
+                label = { Text(textFieldLabel) },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        onSave(inputString)
+                        onDismiss()
+                    }
+                ),
+                modifier = Modifier
+                    .fillMaxWidth(),
+            )
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onSave(inputString)
+                    onDismiss()
+                }
+            ) {
+                Text(stringResource(R.string.save_button))
             }
         },
         dismissButton = {

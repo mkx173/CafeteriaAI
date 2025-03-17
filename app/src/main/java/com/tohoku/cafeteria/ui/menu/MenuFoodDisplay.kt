@@ -39,10 +39,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tohoku.cafeteria.R
+import com.tohoku.cafeteria.domain.model.CartItem
 import com.tohoku.cafeteria.domain.model.FoodCategory
 import com.tohoku.cafeteria.domain.model.MenuItem
 import com.tohoku.cafeteria.domain.model.NutritionData
+import com.tohoku.cafeteria.ui.cart.CartViewModel
 import com.tohoku.cafeteria.ui.components.MenuCarouselComponent
 import com.tohoku.cafeteria.ui.components.MenuFoodBottomSheetComponent
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
@@ -52,7 +55,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun MenuFoodDisplay(
     modifier: Modifier = Modifier,
-    categoryData: List<FoodCategory>?
+    categoryData: List<FoodCategory>?,
+    cartViewModel: CartViewModel = viewModel()
 ) {
     // Add at the top of MenuFoodDisplay:
     val scope = rememberCoroutineScope()
@@ -68,7 +72,10 @@ fun MenuFoodDisplay(
             scope.launch { sheetState.hide() }
             selectedItem = null
         },
-        onAddToCart = {_, _ -> }
+        onAddToCart = { menuItem, variant ->
+            cartViewModel.addToCart(CartItem(item = variant, name = menuItem.name))
+            scope.launch { sheetState.hide() }
+        }
     )
 
     val handleItemClick: (MenuItem) -> Unit = { item ->

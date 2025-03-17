@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tohoku.cafeteria.R
+import com.tohoku.cafeteria.ui.cart.CartViewModel
 import com.tohoku.cafeteria.ui.navigation.SnackbarManager
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
 
@@ -36,6 +37,7 @@ import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
 fun MenuScreen(
     modifier: Modifier = Modifier,
     viewModel: MenuViewModel = viewModel(factory = MenuViewModel.Factory),
+    cartViewModel: CartViewModel
 ) {
     val uiState = viewModel.uiState.value
     val pullRefreshState = rememberPullToRefreshState()
@@ -88,7 +90,10 @@ fun MenuScreen(
                     )
                 }
                 else -> {
-                    MenuFoodDisplay(categoryData = uiState.menuData)
+                    MenuFoodDisplay(
+                        categoryData = uiState.menuData,
+                        cartViewModel = cartViewModel
+                    )
                 }
             }
         }

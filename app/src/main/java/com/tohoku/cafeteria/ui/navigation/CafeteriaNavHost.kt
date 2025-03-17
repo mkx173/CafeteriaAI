@@ -8,13 +8,17 @@ import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Reviews
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -23,11 +27,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.tohoku.cafeteria.R
+import com.tohoku.cafeteria.ui.cart.CartViewModel
+import com.tohoku.cafeteria.ui.cart.rememberCartViewModel
 import com.tohoku.cafeteria.ui.history.HistoryScreen
 import com.tohoku.cafeteria.ui.menu.MenuScreen
 import com.tohoku.cafeteria.ui.recommendation.RecommendationScreen
@@ -78,6 +85,15 @@ fun CafeteriaNavHost(
     val snackbarHostState = remember { SnackbarHostState() }
     val currentRoute = currentRoute(navController)
 
+    // Shared cart ViewModel
+    val cartViewModel: CartViewModel = rememberCartViewModel(
+        viewModelStoreOwner = LocalViewModelStoreOwner.current!!
+    )
+
+    // Collect cart data
+    val cartItems by cartViewModel.cartItems.collectAsState()
+    val cartItemCount = cartItems.sumOf { it.quantity }
+
     // Collect and display messages from the SnackbarManager
     val message by SnackbarManager.messages.collectAsState()
 
@@ -107,10 +123,24 @@ fun CafeteriaNavHost(
                             }
                         },
                         icon = {
-                            Icon(
-                                imageVector = navItem.icon,
-                                contentDescription = stringResource(navItem.screen.label)
-                            )
+                            BadgedBox(
+                                badge = {
+                                    // Only show badge on the Recommendation tab
+                                    if (navItem.screen == Screen.Recommendation && cartItemCount > 0) {
+                                        Badge {
+                                            Text(
+                                                text = if (cartItemCount > 99) "99+" else cartItemCount.toString(),
+                                                style = MaterialTheme.typography.labelSmall
+                                            )
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = navItem.icon,
+                                    contentDescription = stringResource(navItem.screen.label)
+                                )
+                            }
                         }
                     )
                 }
@@ -124,12 +154,14 @@ fun CafeteriaNavHost(
         ) {
             composable(Screen.Menu.route) {
                 MenuScreen(
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = Modifier.padding(innerPadding),
+                    cartViewModel = cartViewModel
                 )
             }
             composable(Screen.Recommendation.route) {
                 RecommendationScreen(
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = Modifier.padding(innerPadding),
+                    cartViewModel = cartViewModel
                 )
             }
             composable(Screen.History.route) {
