@@ -20,7 +20,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -45,6 +44,7 @@ import com.tohoku.cafeteria.domain.model.FoodCategory
 import com.tohoku.cafeteria.domain.model.MenuItem
 import com.tohoku.cafeteria.domain.model.NutritionData
 import com.tohoku.cafeteria.ui.components.MenuCarouselComponent
+import com.tohoku.cafeteria.ui.components.MenuFoodBottomSheetComponent
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
 import kotlinx.coroutines.launch
 
@@ -56,23 +56,24 @@ fun MenuFoodDisplay(
 ) {
     // Add at the top of MenuFoodDisplay:
     val scope = rememberCoroutineScope()
-    var selectedFoodItem by remember { mutableStateOf<MenuItem?>(null) }
-    val sheetState = rememberModalBottomSheetState()
+    var selectedItem by remember { mutableStateOf<MenuItem?>(null) }
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
 
-    if (sheetState.isVisible) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                scope.launch { sheetState.hide() }
-                selectedFoodItem = null
-            },
-            sheetState = sheetState
-        ) {
-            Text(
-                text = "Item Details",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(16.dp)
-            )
-        }
+    MenuFoodBottomSheetComponent(
+        sheetState = sheetState,
+        selectedItem = selectedItem,
+        onDismiss = {
+            scope.launch { sheetState.hide() }
+            selectedItem = null
+        },
+        onAddToCart = {_, _ -> }
+    )
+
+    val handleItemClick: (MenuItem) -> Unit = { item ->
+        selectedItem = item
+        scope.launch { sheetState.show() }
     }
 
     LazyColumn(
@@ -85,7 +86,8 @@ fun MenuFoodDisplay(
                 item {
                     MenuCarouselComponent(
                         title = "Today's Menu",
-                        items = categoryData[0].items
+                        items = categoryData[0].items,
+                        onItemClick = handleItemClick
                     )
                 }
             }
@@ -102,10 +104,7 @@ fun MenuFoodDisplay(
                         Surface (
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable {
-                                    selectedFoodItem = foodItem
-                                    scope.launch { sheetState.show() }
-                                }
+                                .clickable { handleItemClick(foodItem) }
                                 .padding(vertical = dimensionResource(R.dimen.padding_xsmall)),
                             shape = MaterialTheme.shapes.medium,
                             tonalElevation = 1.dp
@@ -155,10 +154,7 @@ fun MenuFoodDisplay(
                                     }
                                     Row(verticalAlignment = Alignment.CenterVertically) {
                                         Text(text = priceText)
-                                        IconButton(onClick = {
-                                            selectedFoodItem = foodItem
-                                            scope.launch { sheetState.show() }
-                                        }) {
+                                        IconButton(onClick = { handleItemClick(foodItem) }) {
                                             Icon(
                                                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                                                 contentDescription = stringResource(R.string.add_to_cart)

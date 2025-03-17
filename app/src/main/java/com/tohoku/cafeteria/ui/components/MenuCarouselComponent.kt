@@ -1,6 +1,7 @@
 package com.tohoku.cafeteria.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -31,7 +32,8 @@ import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
 fun MenuCarouselComponent(
     modifier: Modifier = Modifier,
     title: String,
-    items: List<MenuItem>
+    items: List<MenuItem>,
+    onItemClick: (MenuItem) -> Unit
 ) {
     Column {
         Text(
@@ -47,7 +49,9 @@ fun MenuCarouselComponent(
         ) { i ->
             val item = items[i]
             Box(
-                modifier = Modifier.wrapContentSize()
+                modifier = Modifier
+                    .wrapContentSize()
+                    .clickable { onItemClick(item) }
             ) {
                 Image(
                     painter = painterResource(R.drawable.sample_food),
@@ -105,7 +109,8 @@ fun MenuCarouselComponentPreview() {
                         )
                     )
                 )
-            }
+            },
+            onItemClick = { }
         )
     }
 }
