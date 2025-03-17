@@ -16,11 +16,13 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
@@ -87,57 +89,68 @@ fun MenuFoodBottomSheetComponent(
                 // Variant selection with radio buttons (only if there's more than one variant)
                 if (selectedItem.nutritionDataList.size > 1) {
                     Text(
-                        text = "Select Size",
+                        text = stringResource(R.string.select_size),
                         style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_small))
+                        modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_xsmall))
                     )
 
                     selectedItem.nutritionDataList.forEach { variant ->
-                        Row(
-                            modifier = Modifier
+                        Surface(
+                            modifier = modifier
                                 .fillMaxWidth()
-                                .padding(vertical = dimensionResource(R.dimen.padding_small))
+                                .padding(vertical = dimensionResource(R.dimen.padding_xsmall))
                                 .clickable { selectedVariant = variant },
-                            verticalAlignment = Alignment.CenterVertically
+                            shape = MaterialTheme.shapes.small,
+                            tonalElevation = 1.dp
                         ) {
-                            RadioButton(
-                                selected = selectedVariant == variant,
-                                onClick = { selectedVariant = variant }
-                            )
-
-                            Column(
+                            ListItem(
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .padding(start = dimensionResource(R.dimen.padding_small))
-                            ) {
-                                Text(
-                                    text = variant.variantName,
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
+                                    .fillMaxWidth(),
+                                leadingContent = {
+                                    RadioButton(
+                                        selected = selectedVariant == variant,
+                                        onClick = { selectedVariant = variant }
+                                    )
+                                },
+                                headlineContent = {
+                                    Text(
+                                        text = variant.variantName,
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                },
+                                supportingContent = {
+                                    Text(
+                                        text = stringResource(R.string.kcal, variant.calories),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                },
+                                trailingContent = {
+                                    Text(
+                                        text = stringResource(R.string.price, variant.price),
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
 
-                                Text(
-                                    text = stringResource(R.string.kcal, variant.calories),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-
-                            Text(
-                                text = stringResource(R.string.price, variant.price),
-                                style = MaterialTheme.typography.bodyLarge
+                                }
                             )
                         }
                     }
-
-                    HorizontalDivider(modifier = Modifier.padding(vertical = dimensionResource(R.dimen.padding_medium)))
                 }
 
                 // Nutrition details for selected variant
                 selectedVariant?.let { variant ->
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .padding(
+                                top = dimensionResource(R.dimen.padding_medium),
+                                bottom = dimensionResource(R.dimen.padding_small)
+                            )
+                    )
+
                     Text(
                         text = stringResource(R.string.nutrition_information),
                         style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(vertical = dimensionResource(R.dimen.padding_small))
+                        modifier = Modifier.padding(vertical = dimensionResource(R.dimen.padding_xsmall))
                     )
 
                     NutritionDetailRow(label = stringResource(R.string.calories), value = stringResource(R.string.kcal, variant.calories))
@@ -180,7 +193,7 @@ private fun NutritionDetailRow(label: String, value: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = dimensionResource(R.dimen.padding_small)),
+            .padding(vertical = dimensionResource(R.dimen.padding_xsmall)),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(

@@ -23,8 +23,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -64,6 +66,39 @@ fun RecommendationScreen(
             CenterAlignedTopAppBar(
                 title = { Text(text = stringResource(R.string.tab_recommendation)) },
             )
+        },
+        bottomBar = {
+            if (cartItems.isNotEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(R.dimen.padding_medium))
+                ) {
+                    HorizontalDivider()
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = stringResource(R.string.total),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        },
+                        trailingContent = {
+                            Text(
+                                text = stringResource(R.string.price, totalPrice),
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    )
+
+                    Button(
+                        onClick = { /* Implement checkout */ },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(stringResource(R.string.get_recommendation))
+                    }
+                }
+            }
         }
     ) { innerPadding ->
         if (cartItems.isEmpty()) {
@@ -73,7 +108,10 @@ fun RecommendationScreen(
                     .padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) {
-                Text(stringResource(R.string.cart_empty))
+                Text(
+                    stringResource(R.string.cart_empty),
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
         } else {
             LazyColumn(
@@ -92,40 +130,6 @@ fun RecommendationScreen(
                             cartViewModel.removeFromCart(item.item.variantId)
                         }
                     )
-                    HorizontalDivider()
-                }
-
-                // Total and checkout
-                item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = dimensionResource(R.dimen.padding_medium))
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = stringResource(R.string.total),
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                            Text(
-                                text = stringResource(R.string.price, totalPrice),
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
-
-                        Button(
-                            onClick = { /* Implement checkout */ },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(stringResource(R.string.get_recommendation))
-                        }
-                    }
                 }
             }
         }
@@ -134,6 +138,7 @@ fun RecommendationScreen(
 
 @Composable
 fun CartItemRow(
+    modifier: Modifier = Modifier,
     item: CartItem,
     onQuantityChanged: (Int) -> Unit,
     onRemoveClick: () -> Unit
@@ -152,61 +157,66 @@ fun CartItemRow(
         showConfirmDialog = true
     }
 
-    Row(
-        modifier = Modifier
+    Surface(
+        modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = dimensionResource(R.dimen.padding_medium)),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(vertical = dimensionResource(R.dimen.padding_xsmall)),
+        shape = MaterialTheme.shapes.small,
+        tonalElevation = 1.dp
     ) {
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = stringResource(R.string.name_variant_name, item.name, item.item.variantName),
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Text(
-                text = stringResource(R.string.price, item.item.price),
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                onClick = {
-                    if (item.quantity - 1 <= 0) {
-                        showConfirmation(context.getString(R.string.confirm_remove_cart, item.name)) {
-                            onQuantityChanged(0)
+        ListItem(
+            headlineContent = {
+                Text(
+                    text = stringResource(R.string.name_variant_name, item.name, item.item.variantName),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            },
+            supportingContent = {
+                Text(
+                    text = stringResource(R.string.price, item.item.price),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            trailingContent = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(
+                        onClick = {
+                            if (item.quantity - 1 <= 0) {
+                                showConfirmation(context.getString(R.string.confirm_remove_cart, item.name)) {
+                                    onQuantityChanged(0)
+                                }
+                            } else {
+                                onQuantityChanged(item.quantity - 1)
+                            }
                         }
-                    } else {
-                        onQuantityChanged(item.quantity - 1)
+                    ) {
+                        Icon(Icons.Default.Remove, contentDescription = stringResource(R.string.decrease))
+                    }
+
+                    Text(
+                        text = "${item.quantity}",
+                        modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small)),
+                        style = MaterialTheme.typography.labelLarge
+                    )
+
+                    IconButton(
+                        onClick = { onQuantityChanged(item.quantity + 1) }
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = stringResource(R.string.increase))
+                    }
+
+                    IconButton(onClick = {
+                        showConfirmation(context.getString(R.string.confirm_remove_cart, item.name)) {
+                            onRemoveClick()
+                        }
+                    }) {
+                        Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.remove))
                     }
                 }
-            ) {
-                Icon(Icons.Default.Remove, contentDescription = stringResource(R.string.decrease))
             }
-
-            Text(
-                text = "${item.quantity}",
-                modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small))
-            )
-
-            IconButton(
-                onClick = { onQuantityChanged(item.quantity + 1) }
-            ) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.increase))
-            }
-
-            IconButton(onClick = {
-                showConfirmation(context.getString(R.string.confirm_remove_cart, item.name)) {
-                    onRemoveClick()
-                }
-            }) {
-                Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.remove))
-            }
-        }
+        )
     }
 
     // Confirmation dialog
@@ -228,6 +238,29 @@ fun CartItemRow(
                     Text(stringResource(R.string.cancel_button))
                 }
             }
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CartItemRowPreview() {
+    CafeteriaAITheme {
+        CartItemRow(
+            item = CartItem(
+                item = NutritionData(
+                    variantName = "M",
+                    variantId = 102,
+                    price = 600,
+                    calories = 600,
+                    protein = 30,
+                    fat = 25,
+                    carbohydrates = 60
+                ),
+                name = "Sample Burger"
+            ),
+            onQuantityChanged = { },
+            onRemoveClick = { }
         )
     }
 }

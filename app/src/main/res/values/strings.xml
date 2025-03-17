@@ -48,7 +48,7 @@
     <string name="unknown_error_occurred">Unknown error occurred</string>
     <string name="menu_unavailable">The menu is not yet available</string>
     <string name="food_preferences">Food Preferences</string>
-    <string name="your_preferences">Your Preferences</string>
+    <string name="your_preferences">Set your food preferences</string>
     <string name="food_allergies">Food Allergies</string>
     <string name="list_food_allergies">List any food allergies</string>
     <string name="cart_empty">Your cart is empty</string>
@@ -69,4 +69,5 @@
     <string name="carbohydrates">Carbohydrates</string>
     <string name="gram">%1$sg</string>
     <string name="add_to_cart_price">Add to Cart (JP¥%1$s)</string>
+    <string name="select_size">Select Size</string>
 </resources>
