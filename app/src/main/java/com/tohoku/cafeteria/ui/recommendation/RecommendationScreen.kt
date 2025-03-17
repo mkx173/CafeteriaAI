@@ -76,6 +76,7 @@ fun RecommendationScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(innerPadding)
+                    .padding(dimensionResource(R.dimen.padding_medium))
             ) {
                 items(cartItems) { item ->
                     CartItemRow(
@@ -95,7 +96,7 @@ fun RecommendationScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(dimensionResource(R.dimen.padding_medium))
+                            .padding(top = dimensionResource(R.dimen.padding_medium))
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -150,7 +151,7 @@ fun CartItemRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(dimensionResource(R.dimen.padding_medium)),
+            .padding(vertical = dimensionResource(R.dimen.padding_medium)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
@@ -225,5 +226,4 @@ fun CartItemRow(
             }
         )
     }
-
 }

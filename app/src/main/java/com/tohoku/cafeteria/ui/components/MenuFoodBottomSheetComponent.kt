@@ -35,6 +35,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -69,7 +70,7 @@ fun MenuFoodBottomSheetComponent(
                 Image(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(16f/9f)
+                        .aspectRatio(16f / 9f)
                         .clip(MaterialTheme.shapes.large),
                     painter = painterResource(R.drawable.sample_food),
                     contentDescription = selectedItem.name,
@@ -115,14 +116,14 @@ fun MenuFoodBottomSheetComponent(
                                 )
 
                                 Text(
-                                    text = "${variant.calories} Cal",
+                                    text = stringResource(R.string.kcal, variant.calories),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
 
                             Text(
-                                text = "$${variant.price / 100}.${variant.price % 100}",
+                                text = stringResource(R.string.price, variant.price),
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }
@@ -134,15 +135,21 @@ fun MenuFoodBottomSheetComponent(
                 // Nutrition details for selected variant
                 selectedVariant?.let { variant ->
                     Text(
-                        text = "Nutrition Information",
+                        text = stringResource(R.string.nutrition_information),
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.padding(vertical = dimensionResource(R.dimen.padding_small))
                     )
 
-                    NutritionDetailRow(label = "Calories", value = "${variant.calories} Cal")
-                    NutritionDetailRow(label = "Protein", value = "${variant.protein}g")
-                    NutritionDetailRow(label = "Fat", value = "${variant.fat}g")
-                    NutritionDetailRow(label = "Carbohydrates", value = "${variant.carbohydrates}g")
+                    NutritionDetailRow(label = stringResource(R.string.calories), value = stringResource(R.string.kcal, variant.calories))
+                    NutritionDetailRow(label = stringResource(R.string.protein), value = stringResource(
+                        R.string.gram, variant.protein
+                    ))
+                    NutritionDetailRow(label = stringResource(R.string.fat), value = stringResource(
+                        R.string.gram, variant.fat
+                    ))
+                    NutritionDetailRow(label = stringResource(R.string.carbohydrates), value = stringResource(
+                        R.string.gram, variant.carbohydrates
+                    ))
                 }
             }
 
@@ -158,7 +165,7 @@ fun MenuFoodBottomSheetComponent(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "Add to Cart ($${variant.price / 100}.${variant.price % 100})",
+                            text = stringResource(R.string.add_to_cart_price, variant.price),
                             style = MaterialTheme.typography.labelLarge
                         )
                     }
