@@ -20,9 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class CartViewModel(
-    private val application: CafeteriaApplication
-) : ViewModel() {
+class CartViewModel : ViewModel() {
     private val _cartItems = MutableStateFlow<List<CartItem>>(emptyList())
     val cartItems = _cartItems.asStateFlow()
 
@@ -34,7 +32,7 @@ class CartViewModel(
         initialValue = 0.0
     )
 
-    fun addToCart(item: CartItem) {
+    fun addToCart(item: CartItem, message: String) {
         val currentItems = _cartItems.value.toMutableList()
         val existingItem = currentItems.find { it.item.variantId == item.item.variantId }
 
@@ -47,11 +45,8 @@ class CartViewModel(
         _cartItems.value = currentItems
         // Show confirmation message
         SnackbarManager.showMessage(
-            application.getString(
-                R.string.added_to_cart,
-                item.name,
-                item.item.variantName
-            ))
+            String.format(message, item.name, item.item.variantName)
+        )
     }
 
     fun removeFromCart(itemId: Int) {
@@ -78,15 +73,6 @@ class CartViewModel(
     fun clearCart() {
         _cartItems.value = emptyList()
     }
-
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = (this[APPLICATION_KEY] as CafeteriaApplication)
-                CartViewModel(application = application)
-            }
-        }
-    }
 }
 
 @Composable
@@ -95,5 +81,5 @@ fun rememberCartViewModel(
         "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
     }
 ): CartViewModel {
-    return viewModel(viewModelStoreOwner, factory = CartViewModel.Factory)
+    return viewModel(viewModelStoreOwner)
 }

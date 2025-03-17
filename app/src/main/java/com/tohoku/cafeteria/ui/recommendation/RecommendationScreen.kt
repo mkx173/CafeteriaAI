@@ -39,11 +39,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.domain.model.CartItem
+import com.tohoku.cafeteria.domain.model.NutritionData
 import com.tohoku.cafeteria.ui.cart.CartViewModel
+import com.tohoku.cafeteria.ui.cart.rememberCartViewModel
+import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -224,6 +228,47 @@ fun CartItemRow(
                     Text(stringResource(R.string.cancel_button))
                 }
             }
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RecommendationScreenPreview() {
+    val cartViewModel = rememberCartViewModel()
+    cartViewModel.addToCart(
+        CartItem(
+            item = NutritionData(
+                variantName = "S",
+                variantId = 101,
+                price = 500,
+                calories = 500,
+                protein = 25,
+                fat = 20,
+                carbohydrates = 50
+            ),
+            name = "Sample Burger"
+        ),
+        message = stringResource(R.string.added_to_cart)
+    )
+    cartViewModel.addToCart(
+        CartItem(
+            item = NutritionData(
+                variantName = "M",
+                variantId = 102,
+                price = 600,
+                calories = 600,
+                protein = 30,
+                fat = 25,
+                carbohydrates = 60
+            ),
+            name = "Sample Burger"
+        ),
+        message = stringResource(R.string.added_to_cart)
+    )
+    CafeteriaAITheme {
+        RecommendationScreen(
+            cartViewModel = cartViewModel
         )
     }
 }

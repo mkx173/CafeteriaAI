@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -64,6 +65,7 @@ fun MenuFoodDisplay(
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
+    val context = LocalContext.current
 
     MenuFoodBottomSheetComponent(
         sheetState = sheetState,
@@ -73,7 +75,10 @@ fun MenuFoodDisplay(
             selectedItem = null
         },
         onAddToCart = { menuItem, variant ->
-            cartViewModel.addToCart(CartItem(item = variant, name = menuItem.name))
+            cartViewModel.addToCart(
+                CartItem(item = variant, name = menuItem.name),
+                context.getString(R.string.added_to_cart)
+            )
             scope.launch { sheetState.hide() }
         }
     )
