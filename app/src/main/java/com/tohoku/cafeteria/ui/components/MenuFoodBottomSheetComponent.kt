@@ -135,7 +135,11 @@ fun MenuFoodBottomSheetComponent(
                     HorizontalDivider(
                         modifier = Modifier
                             .padding(
-                                top = dimensionResource(R.dimen.padding_medium),
+                                top = if (selectedItem.foodVariantsList.size > 1) {
+                                    dimensionResource(R.dimen.padding_medium)
+                                } else {
+                                    0.dp
+                                },
                                 bottom = dimensionResource(R.dimen.padding_small)
                             )
                     )

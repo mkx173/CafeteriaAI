@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -134,7 +135,7 @@ fun MenuFoodDisplay(
                                 leadingContent = {
                                     AsyncImage(
                                         modifier = Modifier
-                                            .size(dimensionResource(R.dimen.size_icon))
+                                            .size(dimensionResource(R.dimen.size_food_item_image))
                                             .clip(CircleShape),
                                         model = foodItem.url,
                                         contentDescription = foodItem.name,
@@ -166,13 +167,18 @@ fun MenuFoodDisplay(
                                         stringResource(R.string.price, priceValues.firstOrNull() ?: 0)
                                     }
                                     Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Text(text = priceText)
-                                        IconButton(onClick = { handleItemClick(foodItem) }) {
-                                            Icon(
-                                                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                                                contentDescription = stringResource(R.string.add_to_cart)
-                                            )
-                                        }
+                                        Text(
+                                            text = priceText,
+                                            style = MaterialTheme.typography.labelMedium
+                                        )
+                                        Spacer(
+                                            modifier = Modifier.size(dimensionResource(R.dimen.padding_xsmall))
+                                        )
+                                        Icon(
+                                            modifier = Modifier.size(dimensionResource(R.dimen.size_icon)),
+                                            imageVector = Icons.Default.ChevronRight,
+                                            contentDescription = stringResource(R.string.add_to_cart)
+                                        )
                                     }
                                 },
                                 colors = ListItemDefaults.colors(
