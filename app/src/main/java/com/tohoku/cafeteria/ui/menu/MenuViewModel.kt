@@ -39,24 +39,11 @@ class MenuViewModel(
         _uiState.value = _uiState.value.copy(isRefreshing = true)
         viewModelScope.launch {
             try {
-                // Simulate network delay.
-                delay(1000)
-                // Simulate a refresh failure 30% of the time.
-                if (Math.random() in 0.15..0.3) {
-                    throw Exception(application.getString(R.string.unknown_error_occurred))
-                } else if (Math.random() < 0.15) {
-                    _uiState.value = _uiState.value.copy(
-                        menuData = listOf(),
-                        errorMessage = application.getString(R.string.menu_unavailable),
-                        isErrorNew = true
-                    )
-                } else {
-                    _uiState.value = _uiState.value.copy(
-                        menuData = menuRepository.getMenu(),
-                        errorMessage = null,
-                        isErrorNew = false
-                    )
-                }
+                _uiState.value = _uiState.value.copy(
+                    menuData = menuRepository.getMenu(),
+                    errorMessage = null,
+                    isErrorNew = false
+                )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     errorMessage = e.message ?: application.getString(R.string.unknown_error_occurred),

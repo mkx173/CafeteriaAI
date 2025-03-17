@@ -15,19 +15,19 @@ class MenuMockDataSource : MenuDataSource {
                     variantName = "S",
                     variantId = 101,
                     price = 500,
-                    calories = 500,
-                    protein = 25,
-                    fat = 20,
-                    carbohydrates = 50
+                    calories = 500f,
+                    protein = 25f,
+                    fat = 20f,
+                    carbohydrates = 50f
                 ),
                 FoodVariantResponse(
                     variantName = "M",
                     variantId = 102,
                     price = 600,
-                    calories = 600,
-                    protein = 30,
-                    fat = 25,
-                    carbohydrates = 60
+                    calories = 600f,
+                    protein = 30f,
+                    fat = 25f,
+                    carbohydrates = 60f
                 )
             )
         )

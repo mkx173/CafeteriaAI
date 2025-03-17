@@ -7,8 +7,8 @@ data class FoodVariantResponse(
     val variantName: String,
     val variantId: Int,
     val price: Int,
-    val calories: Int,
-    val protein: Int,
-    val fat: Int,
-    val carbohydrates: Int
+    val calories: Float,
+    val protein: Float,
+    val fat: Float,
+    val carbohydrates: Float
 )

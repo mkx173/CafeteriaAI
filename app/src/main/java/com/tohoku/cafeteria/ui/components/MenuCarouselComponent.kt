@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import coil.compose.AsyncImage
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.domain.model.FoodItem
 import com.tohoku.cafeteria.domain.model.FoodVariant
@@ -52,8 +53,8 @@ fun MenuCarouselComponent(
                     .wrapContentSize()
                     .clickable { onItemClick(item) }
             ) {
-                Image(
-                    painter = painterResource(R.drawable.sample_food),
+                AsyncImage(
+                    model = item.url,
                     modifier = Modifier.height(dimensionResource(R.dimen.width_carousel)).maskClip(MaterialTheme.shapes.large),
                     contentDescription = item.name,
                     contentScale = ContentScale.Crop,

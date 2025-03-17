@@ -41,6 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.domain.model.CartItem
 import com.tohoku.cafeteria.domain.model.FoodCategory
@@ -131,11 +132,11 @@ fun MenuFoodDisplay(
                                     )
                                 },
                                 leadingContent = {
-                                    Image(
+                                    AsyncImage(
                                         modifier = Modifier
                                             .size(dimensionResource(R.dimen.size_icon))
                                             .clip(CircleShape),
-                                        painter = painterResource(R.drawable.sample_food),
+                                        model = foodItem.url,
                                         contentDescription = foodItem.name,
                                         contentScale = ContentScale.Crop
                                     )

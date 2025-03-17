@@ -34,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.domain.model.FoodItem
 import com.tohoku.cafeteria.domain.model.FoodVariant
@@ -61,12 +62,12 @@ fun MenuFoodBottomSheetComponent(
                     .padding(dimensionResource(R.dimen.padding_medium))
             ) {
                 // Food image
-                Image(
+                AsyncImage(
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(16f / 9f)
                         .clip(MaterialTheme.shapes.large),
-                    painter = painterResource(R.drawable.sample_food),
+                    model = selectedItem.url,
                     contentDescription = selectedItem.name,
                     contentScale = ContentScale.Crop
                 )
