@@ -1,8 +1,8 @@
 package com.tohoku.cafeteria.domain.model
 
-data class MenuItem(
+data class FoodItem(
     val foodId: Int,
     val name: String,
     val url: String,
-    val nutritionDataList: List<NutritionData>
+    val foodVariantsList: List<FoodVariant>
 )

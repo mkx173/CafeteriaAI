@@ -21,10 +21,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.tohoku.cafeteria.R
-import com.tohoku.cafeteria.domain.model.MenuItem
-import com.tohoku.cafeteria.domain.model.NutritionData
+import com.tohoku.cafeteria.domain.model.FoodItem
+import com.tohoku.cafeteria.domain.model.FoodVariant
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,8 +31,8 @@ import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
 fun MenuCarouselComponent(
     modifier: Modifier = Modifier,
     title: String,
-    items: List<MenuItem>,
-    onItemClick: (MenuItem) -> Unit
+    items: List<FoodItem>,
+    onItemClick: (FoodItem) -> Unit
 ) {
     Column {
         Text(
@@ -84,12 +83,12 @@ fun MenuCarouselComponentPreview() {
         MenuCarouselComponent(
             title = "Burgers",
             items = List(5) {
-                MenuItem(
+                FoodItem(
                     foodId = 1,
                     name = "Sample Burger",
                     url = "https://media.istockphoto.com/id/520410807/photo/cheeseburger.jpg?s=612x612&w=0&k=20&c=fG_OrCzR5HkJGI8RXBk76NwxxTasMb1qpTVlEM0oyg4=",
-                    nutritionDataList = listOf(
-                        NutritionData(
+                    foodVariantsList = listOf(
+                        FoodVariant(
                             variantName = "S",
                             variantId = 101,
                             price = 500,
@@ -98,7 +97,7 @@ fun MenuCarouselComponentPreview() {
                             fat = 20,
                             carbohydrates = 50
                         ),
-                        NutritionData(
+                        FoodVariant(
                             variantName = "M",
                             variantId = 102,
                             price = 600,

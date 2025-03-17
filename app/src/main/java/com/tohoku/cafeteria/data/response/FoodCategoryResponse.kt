@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class FoodCategoryResponse(
     val category: String,
-    val items: List<MenuResponse>
+    val items: List<FoodItemResponse>
 )

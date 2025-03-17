@@ -1,6 +1,6 @@
 package com.tohoku.cafeteria.domain.model
 
-data class NutritionData(
+data class FoodVariant(
     val variantName: String,
     val variantId: Int,
     val price: Int,

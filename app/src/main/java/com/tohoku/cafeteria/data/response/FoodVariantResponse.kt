@@ -3,7 +3,7 @@ package com.tohoku.cafeteria.data.response
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class NutritionResponse(
+data class FoodVariantResponse(
     val variantName: String,
     val variantId: Int,
     val price: Int,

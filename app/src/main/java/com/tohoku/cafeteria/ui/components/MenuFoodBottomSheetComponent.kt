@@ -8,12 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
@@ -30,33 +26,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.tohoku.cafeteria.R
-import com.tohoku.cafeteria.domain.model.MenuItem
-import com.tohoku.cafeteria.domain.model.NutritionData
-import kotlinx.coroutines.launch
+import com.tohoku.cafeteria.domain.model.FoodItem
+import com.tohoku.cafeteria.domain.model.FoodVariant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuFoodBottomSheetComponent(
     modifier: Modifier = Modifier,
-    selectedItem: MenuItem? = null,
+    selectedItem: FoodItem? = null,
     sheetState: SheetState,
     onDismiss: () -> Unit,
-    onAddToCart: (MenuItem, NutritionData) -> Unit
+    onAddToCart: (FoodItem, FoodVariant) -> Unit
 ) {
     if (sheetState.isVisible && selectedItem != null) {
-        var selectedVariant by remember { mutableStateOf(selectedItem.nutritionDataList.firstOrNull()) }
+        var selectedVariant by remember { mutableStateOf(selectedItem.foodVariantsList.firstOrNull()) }
 
         ModalBottomSheet(
             modifier = modifier,
@@ -87,14 +79,14 @@ fun MenuFoodBottomSheetComponent(
                 )
 
                 // Variant selection with radio buttons (only if there's more than one variant)
-                if (selectedItem.nutritionDataList.size > 1) {
+                if (selectedItem.foodVariantsList.size > 1) {
                     Text(
                         text = stringResource(R.string.select_size),
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_xsmall))
                     )
 
-                    selectedItem.nutritionDataList.forEach { variant ->
+                    selectedItem.foodVariantsList.forEach { variant ->
                         Surface(
                             modifier = modifier
                                 .fillMaxWidth()
@@ -212,13 +204,13 @@ private fun NutritionDetailRow(label: String, value: String) {
 @Preview(showBackground = true)
 @Composable
 fun MenuFoodDisplayBottomSheetPreview() {
-    val selectedItem by remember { mutableStateOf<MenuItem?>(
-        MenuItem(
+    val selectedItem by remember { mutableStateOf<FoodItem?>(
+        FoodItem(
             foodId = 1,
             name = "Sample Burger",
             url = "https://media.istockphoto.com/id/520410807/photo/cheeseburger.jpg?s=612x612&w=0&k=20&c=fG_OrCzR5HkJGI8RXBk76NwxxTasMb1qpTVlEM0oyg4=",
-            nutritionDataList = listOf(
-                NutritionData(
+            foodVariantsList = listOf(
+                FoodVariant(
                     variantName = "S",
                     variantId = 101,
                     price = 500,
@@ -227,7 +219,7 @@ fun MenuFoodDisplayBottomSheetPreview() {
                     fat = 20,
                     carbohydrates = 50
                 ),
-                NutritionData(
+                FoodVariant(
                     variantName = "M",
                     variantId = 102,
                     price = 600,

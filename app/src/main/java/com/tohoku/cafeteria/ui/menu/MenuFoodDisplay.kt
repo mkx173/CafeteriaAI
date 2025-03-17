@@ -44,8 +44,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.domain.model.CartItem
 import com.tohoku.cafeteria.domain.model.FoodCategory
-import com.tohoku.cafeteria.domain.model.MenuItem
-import com.tohoku.cafeteria.domain.model.NutritionData
+import com.tohoku.cafeteria.domain.model.FoodItem
+import com.tohoku.cafeteria.domain.model.FoodVariant
 import com.tohoku.cafeteria.ui.cart.CartViewModel
 import com.tohoku.cafeteria.ui.components.MenuCarouselComponent
 import com.tohoku.cafeteria.ui.components.MenuFoodBottomSheetComponent
@@ -61,7 +61,7 @@ fun MenuFoodDisplay(
 ) {
     // Add at the top of MenuFoodDisplay:
     val scope = rememberCoroutineScope()
-    var selectedItem by remember { mutableStateOf<MenuItem?>(null) }
+    var selectedItem by remember { mutableStateOf<FoodItem?>(null) }
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
@@ -83,7 +83,7 @@ fun MenuFoodDisplay(
         }
     )
 
-    val handleItemClick: (MenuItem) -> Unit = { item ->
+    val handleItemClick: (FoodItem) -> Unit = { item ->
         selectedItem = item
         scope.launch { sheetState.show() }
     }
@@ -141,7 +141,7 @@ fun MenuFoodDisplay(
                                     )
                                 },
                                 supportingContent = {
-                                    val calorieValues = foodItem.nutritionDataList.map { it.calories }
+                                    val calorieValues = foodItem.foodVariantsList.map { it.calories }
                                     val calorieText = if (calorieValues.size > 1) {
                                         stringResource(
                                             R.string.kcal_range,
@@ -154,7 +154,7 @@ fun MenuFoodDisplay(
                                     Text(text = calorieText)
                                 },
                                 trailingContent = {
-                                    val priceValues = foodItem.nutritionDataList.map { it.price }
+                                    val priceValues = foodItem.foodVariantsList.map { it.price }
                                     val priceText = if (priceValues.size > 1) {
                                         stringResource(
                                             R.string.price_range,
@@ -198,12 +198,12 @@ fun MenuFoodDisplayPreview() {
                 FoodCategory(
                     category = "Burgers",
                     items = List(5) {
-                        MenuItem(
+                        FoodItem(
                             foodId = 1,
                             name = "Sample Burger",
                             url = "https://media.istockphoto.com/id/520410807/photo/cheeseburger.jpg?s=612x612&w=0&k=20&c=fG_OrCzR5HkJGI8RXBk76NwxxTasMb1qpTVlEM0oyg4=",
-                            nutritionDataList = listOf(
-                                NutritionData(
+                            foodVariantsList = listOf(
+                                FoodVariant(
                                     variantName = "S",
                                     variantId = 101,
                                     price = 500,
@@ -212,7 +212,7 @@ fun MenuFoodDisplayPreview() {
                                     fat = 20,
                                     carbohydrates = 50
                                 ),
-                                NutritionData(
+                                FoodVariant(
                                     variantName = "M",
                                     variantId = 102,
                                     price = 600,

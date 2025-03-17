@@ -5,7 +5,7 @@ import com.tohoku.cafeteria.domain.model.FoodCategory
 
 object FoodCategoryMapper {
     fun fromResponse(response: FoodCategoryResponse): FoodCategory {
-        val items = response.items.map { MenuItemMapper.fromResponse(it) }
+        val items = response.items.map { FoodItemMapper.fromResponse(it) }
         return FoodCategory(
             category = response.category,
             items = items

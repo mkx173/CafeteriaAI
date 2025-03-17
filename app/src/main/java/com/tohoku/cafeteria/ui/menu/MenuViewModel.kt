@@ -12,7 +12,7 @@ import com.tohoku.cafeteria.CafeteriaApplication
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.data.repository.MenuRepository
 import com.tohoku.cafeteria.domain.model.FoodCategory
-import com.tohoku.cafeteria.domain.model.MenuItem
+import com.tohoku.cafeteria.domain.model.FoodItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -73,12 +73,12 @@ class MenuViewModel(
     }
 
     // Retrieve items by category name.
-    fun getItemsByCategory(categoryName: String): List<MenuItem> {
+    fun getItemsByCategory(categoryName: String): List<FoodItem> {
         return _uiState.value.menuData?.find { it.category == categoryName }?.items ?: emptyList()
     }
 
     // Retrieve a menu item by its foodId.
-    fun getItemById(id: Int): MenuItem? {
+    fun getItemById(id: Int): FoodItem? {
         return _uiState.value.menuData?.flatMap { it.items }?.firstOrNull { it.foodId == id }
     }
 

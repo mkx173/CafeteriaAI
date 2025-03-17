@@ -1,17 +1,17 @@
 package com.tohoku.cafeteria.data.datasource
 
 import com.tohoku.cafeteria.data.response.FoodCategoryResponse
-import com.tohoku.cafeteria.data.response.MenuResponse
-import com.tohoku.cafeteria.data.response.NutritionResponse
+import com.tohoku.cafeteria.data.response.FoodItemResponse
+import com.tohoku.cafeteria.data.response.FoodVariantResponse
 
 class MenuMockDataSource : MenuDataSource {
     override suspend fun getMenu(): List<FoodCategoryResponse> {
-        val sampleFoods = MenuResponse(
+        val sampleFoods = FoodItemResponse(
             foodId = 1,
             name = "Sample Burger",
             url = "android.resource://com.tohoku.cafeteria/drawable/sample_food",
-            nutritionResponseList = listOf(
-                NutritionResponse(
+            variants = listOf(
+                FoodVariantResponse(
                     variantName = "S",
                     variantId = 101,
                     price = 500,
@@ -20,7 +20,7 @@ class MenuMockDataSource : MenuDataSource {
                     fat = 20,
                     carbohydrates = 50
                 ),
-                NutritionResponse(
+                FoodVariantResponse(
                     variantName = "M",
                     variantId = 102,
                     price = 600,
