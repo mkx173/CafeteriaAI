@@ -10,10 +10,9 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.tohoku.cafeteria.CafeteriaApplication
 import com.tohoku.cafeteria.R
-import com.tohoku.cafeteria.data.repository.MenuRepository
+import com.tohoku.cafeteria.data.repository.FoodRepository
 import com.tohoku.cafeteria.domain.model.FoodCategory
 import com.tohoku.cafeteria.domain.model.FoodItem
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 data class MenuUiState(
@@ -24,7 +23,7 @@ data class MenuUiState(
 )
 
 class MenuViewModel(
-    private val menuRepository: MenuRepository,
+    private val foodRepository: FoodRepository,
     private val application: CafeteriaApplication
 ) : ViewModel() {
     private val _uiState = mutableStateOf(MenuUiState())
@@ -40,7 +39,7 @@ class MenuViewModel(
         viewModelScope.launch {
             try {
                 _uiState.value = _uiState.value.copy(
-                    menuData = menuRepository.getMenu(),
+                    menuData = foodRepository.getMenu(),
                     errorMessage = null,
                     isErrorNew = false
                 )
@@ -73,8 +72,8 @@ class MenuViewModel(
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as CafeteriaApplication)
-                val menuRepository = application.appContainer.menuRepository
-                MenuViewModel(menuRepository = menuRepository, application = application)
+                val menuRepository = application.appContainer.foodRepository
+                MenuViewModel(foodRepository = menuRepository, application = application)
             }
         }
     }

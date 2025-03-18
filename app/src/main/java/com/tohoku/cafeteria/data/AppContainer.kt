@@ -1,19 +1,19 @@
 package com.tohoku.cafeteria.data
 
 import android.content.Context
-import com.example.foodnutrition.data.datasource.MenuRemoteDataSource
+import com.example.foodnutrition.data.datasource.FoodRemoteDataSource
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.tohoku.cafeteria.data.database.AppDatabase
-import com.tohoku.cafeteria.data.datasource.MenuMockDataSource
-import com.tohoku.cafeteria.data.datasource.MenuApiService
-import com.tohoku.cafeteria.data.repository.MenuRepository
+import com.tohoku.cafeteria.data.datasource.FoodMockDataSource
+import com.tohoku.cafeteria.data.datasource.FoodApiService
+import com.tohoku.cafeteria.data.repository.FoodRepository
 import com.tohoku.cafeteria.data.repository.SettingsRepository
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 
 interface AppContainer {
-    val menuRepository: MenuRepository
+    val foodRepository: FoodRepository
     val settingsRepository: SettingsRepository
     val database: AppDatabase
 }
@@ -37,17 +37,17 @@ class DefaultAppContainer(context: Context) : BaseAppContainer(context) {
         .baseUrl(BASE_URL)
         .build()
 
-    private val retrofitService: MenuApiService by lazy {
-        retrofit.create(MenuApiService::class.java)
+    private val retrofitService: FoodApiService by lazy {
+        retrofit.create(FoodApiService::class.java)
     }
 
-    override val menuRepository: MenuRepository by lazy {
-        MenuRepository(MenuRemoteDataSource(retrofitService))
+    override val foodRepository: FoodRepository by lazy {
+        FoodRepository(FoodRemoteDataSource(retrofitService))
     }
 }
 
 class MockAppContainer(context: Context) : BaseAppContainer(context) {
-    override val menuRepository: MenuRepository by lazy {
-        MenuRepository(MenuMockDataSource())
+    override val foodRepository: FoodRepository by lazy {
+        FoodRepository(FoodMockDataSource())
     }
 }

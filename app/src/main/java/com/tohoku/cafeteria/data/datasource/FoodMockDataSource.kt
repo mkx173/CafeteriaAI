@@ -4,7 +4,7 @@ import com.tohoku.cafeteria.data.response.FoodCategoryResponse
 import com.tohoku.cafeteria.data.response.FoodItemResponse
 import com.tohoku.cafeteria.data.response.FoodVariantResponse
 
-class MenuMockDataSource : MenuDataSource {
+class FoodMockDataSource : FoodDataSource {
     override suspend fun getMenu(): List<FoodCategoryResponse> {
         val sampleFoods = FoodItemResponse(
             foodId = 1,

@@ -9,7 +9,7 @@ object FoodItemMapper {
         return FoodItem(
             foodId = response.foodId,
             name = response.name,
-            url = "http://34.229.85.230:8000" + response.url,
+            url = response.url,
             foodVariantsList = response.variants.map { foodVariantResponse ->
                 FoodVariant(
                     variantName = foodVariantResponse.variantName,
