@@ -27,7 +27,8 @@ data class RecommendationUiState(
     val isErrorNew: Boolean = false,
     val errorMessage: String? = null,
     val additionalNotes: String? = null,
-    val foodRatings: Map<Int, Rating> = emptyMap()
+    val foodRatings: Map<Int, Rating> = emptyMap(),
+    val foodSelected: Map<Int, Boolean> = emptyMap()
 )
 
 class RecommendationViewModel(
@@ -79,6 +80,12 @@ class RecommendationViewModel(
         val currentRatings = _uiState.value.foodRatings.toMutableMap()
         currentRatings[variantId] = rating
         _uiState.value = _uiState.value.copy(foodRatings = currentRatings.toMap())
+    }
+
+    fun updateFoodSelected(variantId: Int, isSelected: Boolean) {
+        val currentSelected = _uiState.value.foodSelected.toMutableMap()
+        currentSelected[variantId] = isSelected
+        _uiState.value = _uiState.value.copy(foodSelected = currentSelected.toMap())
     }
 
     companion object {

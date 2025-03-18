@@ -1,6 +1,7 @@
 package com.tohoku.cafeteria.ui.recommendation
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,12 +18,16 @@ import androidx.compose.material.icons.filled.ThumbDown
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.ThumbDown
 import androidx.compose.material.icons.outlined.ThumbUp
+import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
@@ -49,6 +54,7 @@ import coil.compose.AsyncImage
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.data.entity.FoodEntity
 import com.tohoku.cafeteria.data.response.RecommendationResponse
+import com.tohoku.cafeteria.ui.components.FoodSelectorBottomSheetComponent
 import com.tohoku.cafeteria.ui.components.RecommendationResultFoodBottomSheetComponent
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
 import kotlinx.coroutines.launch
@@ -60,7 +66,8 @@ fun RecommendationResultDisplay (
     viewModel: RecommendationViewModel = viewModel(factory = RecommendationViewModel.Factory),
     recommendationResponse: RecommendationResponse,
     getFoodByVariantId: suspend (Int) -> FoodEntity?,
-    onTotalPriceCalculated: (Int) -> Unit
+    onTotalPriceCalculated: (Int) -> Unit,
+    setSaveToHistoryClick: (() -> Unit) -> Unit
 ) {
     val uiState = viewModel.uiState.value
     val recommendedFoods = remember { mutableStateListOf<FoodEntity?>() }
@@ -87,6 +94,25 @@ fun RecommendationResultDisplay (
         }
     )
 
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val addToHistorySheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+
+    FoodSelectorBottomSheetComponent(
+        showBottomSheet = showBottomSheet,
+        addToHistorySheetState = addToHistorySheetState,
+        recommendedFoods = recommendedFoods,
+        viewModel = viewModel,
+        onDismiss = {
+            scope.launch {
+                addToHistorySheetState.hide()
+                showBottomSheet = false
+            }
+        },
+        onSaveToHistory = { }
+    )
+
     LaunchedEffect(recommendationResponse.recommendedMeals) {
         recommendedFoods.clear() // Clear the list if the recommended meals change
         recommendationResponse.recommendedMeals.forEach { variantId ->
@@ -94,10 +120,17 @@ fun RecommendationResultDisplay (
             recommendedFoods.add(foodItem)
             foodItem?.let {
                 viewModel.updateFoodRating(foodItem.variantId, Rating.NONE)
+                viewModel.updateFoodSelected(foodItem.variantId, true)
             }
         }
         val computedPrice = recommendedFoods.filterNotNull().sumOf { it.price }
         onTotalPriceCalculated(computedPrice)
+        setSaveToHistoryClick {
+            scope.launch {
+                showBottomSheet = true
+                addToHistorySheetState.show()
+            }
+        }
     }
 
     LazyColumn(
@@ -140,7 +173,7 @@ fun RecommendationResultDisplay (
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = dimensionResource(R.dimen.padding_small)),
-                        headlineContent = { Text(text = foodItem.foodName) },
+                        headlineContent = { Text(text = stringResource(R.string.name_variant_name, foodItem.foodName, foodItem.variantName)) },
                         supportingContent = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
@@ -250,7 +283,8 @@ fun RecommendationResultDisplayPreview() {
                     else -> null
                 }
             },
-            onTotalPriceCalculated = { }
+            onTotalPriceCalculated = { },
+            setSaveToHistoryClick = { }
         )
     }
 }

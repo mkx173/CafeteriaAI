@@ -62,6 +62,8 @@ fun RecommendationResultScreen(
     var additionalNotes by remember { mutableStateOf("") }
     var totalPrice by remember { mutableIntStateOf(0) }
 
+    var onSaveToHistoryClick by remember { mutableStateOf({}) }
+
     LaunchedEffect(uiState.isErrorNew) {
         if (uiState.isErrorNew) {
             uiState.errorMessage?.let { message ->
@@ -150,7 +152,7 @@ fun RecommendationResultScreen(
                         }
 
                         Button(
-                            onClick = { },
+                            onClick = onSaveToHistoryClick,
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(horizontal = dimensionResource(R.dimen.padding_medium))
@@ -180,7 +182,10 @@ fun RecommendationResultScreen(
                         getFoodByVariantId =  viewModel::getFoodByVariantId,
                         onTotalPriceCalculated = { price ->
                             totalPrice = price
-                        }
+                        },
+                        setSaveToHistoryClick = { action ->
+                            onSaveToHistoryClick = action
+                        },
                     )
                 }
                 uiState.errorMessage != null -> {
