@@ -1,7 +1,9 @@
-package com.tohoku.cafeteria.ui.menu
+package com.tohoku.cafeteria.ui.recommendation
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -11,35 +13,36 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.tohoku.cafeteria.CafeteriaApplication
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.data.repository.FoodRepository
-import com.tohoku.cafeteria.domain.model.FoodCategory
-import com.tohoku.cafeteria.domain.model.FoodItem
+import com.tohoku.cafeteria.data.response.RecommendationResponse
 import kotlinx.coroutines.launch
 
-data class MenuUiState(
-    val menuData: List<FoodCategory>? = null,
+data class RecommendationUiState(
+    val recommendation: RecommendationResponse? = null,
     val isRefreshing: Boolean = false,
     val isErrorNew: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val additionalNotes: String? = null
 )
 
-class MenuViewModel(
+class RecommendationViewModel(
     private val foodRepository: FoodRepository,
     private val application: CafeteriaApplication
-) : ViewModel() {
-    private val _uiState = mutableStateOf(MenuUiState())
-    val uiState: State<MenuUiState> = _uiState
+) :  ViewModel() {
 
-    init {
-        refreshMenu()
-    }
+    private val _uiState = mutableStateOf(RecommendationUiState())
+    val uiState: State<RecommendationUiState> = _uiState
 
-    fun refreshMenu()  {
+    fun fetchRecommendation() {
         // Clear any previous error and set refreshing state.
         _uiState.value = _uiState.value.copy(isRefreshing = true)
         viewModelScope.launch {
             try {
+                val response = foodRepository.requestRecommendation(_uiState.value.additionalNotes ?: "")
+                if (!response.isSuccessful) {
+                    throw Exception("Request failed with code: ${response.code()}")
+                }
                 _uiState.value = _uiState.value.copy(
-                    menuData = foodRepository.getMenu(),
+                    recommendation = response.body(),
                     errorMessage = null,
                     isErrorNew = false
                 )
@@ -58,14 +61,8 @@ class MenuViewModel(
         _uiState.value = _uiState.value.copy(isErrorNew = false)
     }
 
-    // Retrieve items by category name.
-    fun getItemsByCategory(categoryName: String): List<FoodItem> {
-        return _uiState.value.menuData?.find { it.category == categoryName }?.items ?: emptyList()
-    }
-
-    // Retrieve a menu item by its foodId.
-    fun getItemById(id: Int): FoodItem? {
-        return _uiState.value.menuData?.flatMap { it.items }?.firstOrNull { it.foodId == id }
+    fun setAdditionalNotes(additionalNotes: String) {
+        _uiState.value = _uiState.value.copy(additionalNotes = additionalNotes)
     }
 
     companion object {
@@ -73,7 +70,7 @@ class MenuViewModel(
             initializer {
                 val application = (this[APPLICATION_KEY] as CafeteriaApplication)
                 val foodRepository = application.appContainer.foodRepository
-                MenuViewModel(foodRepository = foodRepository, application = application)
+                RecommendationViewModel(foodRepository = foodRepository, application = application)
             }
         }
     }

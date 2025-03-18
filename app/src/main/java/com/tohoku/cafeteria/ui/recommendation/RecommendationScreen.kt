@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -21,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,6 +39,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -52,10 +56,12 @@ import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
 fun RecommendationScreen(
     modifier: Modifier = Modifier,
     cartViewModel: CartViewModel = viewModel(),
+    recommendationViewModel: RecommendationViewModel = viewModel(factory = RecommendationViewModel.Factory),
     onGetRecommendationClick: () -> Unit
 ) {
     val cartItems by cartViewModel.cartItems.collectAsState()
     val totalPrice by cartViewModel.totalPrice.collectAsState()
+    var additionalNotes by remember { mutableStateOf("") }
 
     Scaffold(
         modifier = modifier,
@@ -65,35 +71,47 @@ fun RecommendationScreen(
             )
         },
         bottomBar = {
-            if (cartItems.isNotEmpty()) {
-                Column(
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(dimensionResource(R.dimen.padding_medium))
+            ) {
+                OutlinedTextField(
+                    value = additionalNotes,
+                    onValueChange = { newText -> additionalNotes = newText },
+                    label = { Text(stringResource(R.string.additional_instructions)) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(dimensionResource(R.dimen.padding_medium))
-                ) {
-                    HorizontalDivider()
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                text = stringResource(R.string.total),
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        },
-                        trailingContent = {
-                            Text(
-                                text = stringResource(R.string.price, totalPrice),
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    )
-
-                    Button(
-                        onClick = onGetRecommendationClick,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(stringResource(R.string.get_recommendation))
+                        .padding(horizontal = dimensionResource(R.dimen.padding_medium))
+                        .padding(bottom = dimensionResource(R.dimen.padding_xsmall)),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done
+                    ),
+                )
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = stringResource(R.string.total),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    },
+                    trailingContent = {
+                        Text(
+                            text = stringResource(R.string.price, totalPrice),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
+                )
+
+                Button(
+                    onClick = {
+                        recommendationViewModel.setAdditionalNotes(additionalNotes)
+                        onGetRecommendationClick()
+                    },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = dimensionResource(R.dimen.padding_small))
+                ) {
+                    Text(stringResource(R.string.get_recommendation))
                 }
             }
         }

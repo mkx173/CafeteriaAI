@@ -30,7 +30,7 @@ abstract class BaseAppContainer(private val context: Context) : AppContainer {
 
 class DefaultAppContainer(context: Context) : BaseAppContainer(context) {
     private val BASE_URL =
-        "http://34.229.85.230:8000"
+        "http://34.229.85.230:8000/"
 
     private val retrofit: Retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
@@ -42,12 +42,12 @@ class DefaultAppContainer(context: Context) : BaseAppContainer(context) {
     }
 
     override val foodRepository: FoodRepository by lazy {
-        FoodRepository(FoodRemoteDataSource(retrofitService))
+        FoodRepository(FoodRemoteDataSource(retrofitService), settingsRepository)
     }
 }
 
 class MockAppContainer(context: Context) : BaseAppContainer(context) {
     override val foodRepository: FoodRepository by lazy {
-        FoodRepository(FoodMockDataSource())
+        FoodRepository(FoodMockDataSource(), settingsRepository)
     }
 }

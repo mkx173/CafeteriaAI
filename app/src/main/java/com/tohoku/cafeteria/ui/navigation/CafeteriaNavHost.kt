@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -41,6 +42,7 @@ import com.tohoku.cafeteria.ui.history.HistoryScreen
 import com.tohoku.cafeteria.ui.menu.MenuScreen
 import com.tohoku.cafeteria.ui.recommendation.RecommendationResultScreen
 import com.tohoku.cafeteria.ui.recommendation.RecommendationScreen
+import com.tohoku.cafeteria.ui.recommendation.RecommendationViewModel
 import com.tohoku.cafeteria.ui.settings.SettingsScreen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -76,11 +78,14 @@ fun CafeteriaNavHost(
     val currentRoute = currentRoute(navController)
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
     val isInRecommendationSection = currentDestination?.hierarchy?.any { it.route == Screen.Recommendation.route } == true
+    val isOnRecommendationMain = currentRoute == "main"
 
     // Shared cart ViewModel
     val cartViewModel: CartViewModel = rememberCartViewModel(
         viewModelStoreOwner = LocalViewModelStoreOwner.current!!
     )
+
+    val recommendationViewModel: RecommendationViewModel = viewModel(factory = RecommendationViewModel.Factory)
 
     // Collect cart data
     val cartItems by cartViewModel.cartItems.collectAsState()
@@ -93,26 +98,19 @@ fun CafeteriaNavHost(
             NavigationBar {
                 bottomNavItems.forEach { navItem ->
                     NavigationBarItem(
-                        selected = if (navItem.screen == Screen.Recommendation) {
-                            isInRecommendationSection
-                        } else {
-                            currentRoute == navItem.screen.route
-                        },
+                        selected = isInRecommendationSection && navItem.screen == Screen.Recommendation
+                                || currentRoute == navItem.screen.route,
                         onClick = {
                             if (navItem.screen == Screen.Recommendation) {
-                                // If not in the recommendation section, navigate to the start destination ("main")
                                 if (!isInRecommendationSection) {
-                                    navController.navigate("main") {
+                                    navController.navigate(navItem.screen.route) {
                                         popUpTo(navController.graph.startDestinationId) { saveState = true }
                                         launchSingleTop = true
                                         restoreState = true
                                     }
-                                }
-                                // If in recommendation but not on the start destination, simply pop back to it
-                                else if (currentRoute != "main") {
+                                } else if (!isOnRecommendationMain) {
                                     navController.popBackStack("main", false)
                                 }
-                                // Else, if already on the "main" destination, do nothing
                             } else if (currentRoute != navItem.screen.route) {
                                 navController.navigate(navItem.screen.route) {
                                     // Avoid building up a large stack of destinations
@@ -166,7 +164,9 @@ fun CafeteriaNavHost(
                     RecommendationScreen(
                         modifier = Modifier.padding(innerPadding),
                         cartViewModel = cartViewModel,
+                        recommendationViewModel = recommendationViewModel,
                         onGetRecommendationClick = {
+                            recommendationViewModel.fetchRecommendation()
                             navController.navigate("result")
                         }
                     )
@@ -174,6 +174,7 @@ fun CafeteriaNavHost(
                 composable("result") {
                     RecommendationResultScreen(
                         modifier = Modifier.padding(innerPadding),
+                        viewModel = recommendationViewModel,
                         onBackClick = {
                             navController.popBackStack()
                         }
