@@ -1,6 +1,8 @@
 package com.tohoku.cafeteria.data.repository
 
+import com.tohoku.cafeteria.data.dao.FoodDao
 import com.tohoku.cafeteria.data.datasource.FoodDataSource
+import com.tohoku.cafeteria.data.entity.FoodEntity
 import com.tohoku.cafeteria.data.request.RecommendationQuery
 import com.tohoku.cafeteria.data.request.RecommendationRequest
 import com.tohoku.cafeteria.data.response.RecommendationResponse
@@ -13,11 +15,40 @@ import retrofit2.Response
 
 class FoodRepository(
     private val dataSource: FoodDataSource,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val foodDao: FoodDao
 ) {
     suspend fun getMenu(): List<FoodCategory> {
         val responses = dataSource.getMenu()
-        return responses.map { FoodCategoryMapper.fromResponse(it) }
+        val foodCategories = responses.map { FoodCategoryMapper.fromResponse(it) }
+        saveMenuToDatabase(foodCategories) // Save to database after fetching
+        return foodCategories
+    }
+
+    private suspend fun saveMenuToDatabase(foodCategories: List<FoodCategory>) {
+        val foodEntities = mutableListOf<FoodEntity>()
+        foodCategories.forEach { category ->
+            category.items.forEach { item ->
+                item.foodVariantsList.forEach { variant ->
+                    foodEntities.add(
+                        FoodEntity(
+                            variantId = variant.variantId,
+                            foodId = item.foodId,
+                            variantName = variant.variantName,
+                            foodName = item.name,
+                            price = variant.price,
+                            calories = variant.calories,
+                            protein = variant.protein,
+                            fat = variant.fat,
+                            carbohydrates = variant.carbohydrates,
+                            category = category.category,
+                            imageUrl = item.url
+                        )
+                    )
+                }
+            }
+        }
+        foodDao.insertFoods(foodEntities)
     }
 
     // Build the recommendation request using current settings and then call the API.

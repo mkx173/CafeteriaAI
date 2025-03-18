@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "food",
-    indices = [Index(value = ["foodId"]), Index(value = ["orderIndex"])]
+    indices = [Index(value = ["foodId"])]
 )
 data class FoodEntity(
     @PrimaryKey val variantId: Int,
@@ -19,7 +19,5 @@ data class FoodEntity(
     val fat: Int,
     val carbohydrates: Int,
     val category: String,
-    val imageUrl: String,
-    val orderIndex: Int
+    val imageUrl: String
 )
-

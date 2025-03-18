@@ -11,6 +11,6 @@ interface FoodDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFoods(foods: List<FoodEntity>)
 
-    @Query("SELECT * FROM food ORDER BY `orderIndex` ASC")
+    @Query("SELECT * FROM food")
     suspend fun getAllFoods(): List<FoodEntity>
 }
