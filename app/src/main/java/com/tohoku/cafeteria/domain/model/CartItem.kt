@@ -3,5 +3,6 @@ package com.tohoku.cafeteria.domain.model
 data class CartItem(
     val item: FoodVariant,
     val name: String,
-    var quantity: Int = 1
+    val url: String,
+    var quantity: Int = 1,
 )

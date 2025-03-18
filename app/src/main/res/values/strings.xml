@@ -78,4 +78,5 @@
     <string name="thumbs_up">Thumbs up</string>
     <string name="thumbs_down">Thumbs down</string>
     <string name="item_not_found">Item not found</string>
+    <string name="ok">OK</string>
 </resources>

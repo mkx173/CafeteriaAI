@@ -188,7 +188,7 @@ fun MenuFoodBottomSheetComponent(
 }
 
 @Composable
-private fun NutritionDetailRow(label: String, value: String) {
+fun NutritionDetailRow(label: String, value: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

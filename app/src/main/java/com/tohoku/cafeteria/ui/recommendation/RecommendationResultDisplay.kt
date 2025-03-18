@@ -2,15 +2,12 @@ package com.tohoku.cafeteria.ui.recommendation
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -19,6 +16,7 @@ import androidx.compose.material.icons.filled.ThumbDown
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.ThumbDown
 import androidx.compose.material.icons.outlined.ThumbUp
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -27,10 +25,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,8 +48,11 @@ import coil.compose.AsyncImage
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.data.entity.FoodEntity
 import com.tohoku.cafeteria.data.response.RecommendationResponse
+import com.tohoku.cafeteria.ui.components.RecommendationResultFoodBottomSheetComponent
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecommendationResultDisplay (
     modifier: Modifier = Modifier,
@@ -57,6 +63,28 @@ fun RecommendationResultDisplay (
 ) {
     val uiState = viewModel.uiState.value
     val recommendedFoods = remember { mutableStateListOf<FoodEntity?>() }
+
+    val scope = rememberCoroutineScope()
+    var selectedItem by remember { mutableStateOf<FoodEntity?>(null) }
+    val foodDetailSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+
+    val handleItemClick: (FoodEntity) -> Unit = { item ->
+        selectedItem = item
+        scope.launch { foodDetailSheetState.show() }
+    }
+
+    RecommendationResultFoodBottomSheetComponent(
+        sheetState = foodDetailSheetState,
+        selectedItem = selectedItem,
+        onDismiss = {
+            scope.launch {
+                foodDetailSheetState.hide()
+                selectedItem = null
+            }
+        }
+    )
 
     LaunchedEffect(recommendationResponse.recommendedMeals) {
         recommendedFoods.clear() // Clear the list if the recommended meals change
@@ -101,7 +129,8 @@ fun RecommendationResultDisplay (
             Surface (
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = dimensionResource(R.dimen.padding_xsmall)),
+                    .padding(vertical = dimensionResource(R.dimen.padding_xsmall))
+                    .clickable { foodItem?.let(handleItemClick) },
                 shape = MaterialTheme.shapes.medium,
                 tonalElevation = 1.dp
             ) {

@@ -1,5 +1,6 @@
 package com.tohoku.cafeteria.ui.recommendation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,11 +30,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,10 +52,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.domain.model.CartItem
+import com.tohoku.cafeteria.domain.model.FoodItem
 import com.tohoku.cafeteria.domain.model.FoodVariant
 import com.tohoku.cafeteria.ui.cart.CartViewModel
 import com.tohoku.cafeteria.ui.cart.rememberCartViewModel
+import com.tohoku.cafeteria.ui.components.CartFoodBottomSheetComponent
+import com.tohoku.cafeteria.ui.components.MenuFoodBottomSheetComponent
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,6 +72,28 @@ fun RecommendationScreen(
     val cartItems by cartViewModel.cartItems.collectAsState()
     val totalPrice by cartViewModel.totalPrice.collectAsState()
     var additionalNotes by remember { mutableStateOf("") }
+
+    val scope = rememberCoroutineScope()
+    var selectedItem by remember { mutableStateOf<CartItem?>(null) }
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+
+    val handleItemClick: (CartItem) -> Unit = { item ->
+        selectedItem = item
+        scope.launch { sheetState.show() }
+    }
+
+    CartFoodBottomSheetComponent(
+        sheetState = sheetState,
+        selectedItem = selectedItem,
+        onDismiss = {
+            scope.launch {
+                sheetState.hide()
+                selectedItem = null
+            }
+        }
+    )
 
     Scaffold(
         modifier = modifier,
@@ -141,6 +170,7 @@ fun RecommendationScreen(
                 items(cartItems) { item ->
                     CartItemRow(
                         item = item,
+                        onClick = handleItemClick,
                         onQuantityChanged = { newQuantity ->
                             cartViewModel.updateQuantity(item.item.variantId, newQuantity)
                         },
@@ -158,6 +188,7 @@ fun RecommendationScreen(
 fun CartItemRow(
     modifier: Modifier = Modifier,
     item: CartItem,
+    onClick: (CartItem) -> Unit,
     onQuantityChanged: (Int) -> Unit,
     onRemoveClick: () -> Unit
 ) {
@@ -178,7 +209,8 @@ fun CartItemRow(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = dimensionResource(R.dimen.padding_xsmall)),
+            .padding(vertical = dimensionResource(R.dimen.padding_xsmall))
+            .clickable { onClick(item) },
         shape = MaterialTheme.shapes.small,
         tonalElevation = 1.dp
     ) {
@@ -288,8 +320,10 @@ fun CartItemRowPreview() {
                     fat = 25,
                     carbohydrates = 60
                 ),
-                name = "Sample Burger"
+                name = "Sample Burger",
+                url = "https://media.istockphoto.com/id/520410807/photo/cheeseburger.jpg?s=612x612&w=0&k=20&c=fG_OrCzR5HkJGI8RXBk76NwxxTasMb1qpTVlEM0oyg4="
             ),
+            onClick = { },
             onQuantityChanged = { },
             onRemoveClick = { }
         )
@@ -311,7 +345,8 @@ fun RecommendationScreenPreview() {
                 fat = 20,
                 carbohydrates = 50
             ),
-            name = "Sample Burger"
+            name = "Sample Burger",
+            url = "https://media.istockphoto.com/id/520410807/photo/cheeseburger.jpg?s=612x612&w=0&k=20&c=fG_OrCzR5HkJGI8RXBk76NwxxTasMb1qpTVlEM0oyg4="
         ),
         message = stringResource(R.string.added_to_cart)
     )
@@ -326,7 +361,8 @@ fun RecommendationScreenPreview() {
                 fat = 25,
                 carbohydrates = 60
             ),
-            name = "Sample Burger"
+            name = "Sample Burger",
+            url = "https://media.istockphoto.com/id/520410807/photo/cheeseburger.jpg?s=612x612&w=0&k=20&c=fG_OrCzR5HkJGI8RXBk76NwxxTasMb1qpTVlEM0oyg4="
         ),
         message = stringResource(R.string.added_to_cart)
     )

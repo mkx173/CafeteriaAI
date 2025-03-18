@@ -61,7 +61,6 @@ fun MenuFoodDisplay(
     categoryData: List<FoodCategory>?,
     cartViewModel: CartViewModel = viewModel()
 ) {
-    // Add at the top of MenuFoodDisplay:
     val scope = rememberCoroutineScope()
     var selectedItem by remember { mutableStateOf<FoodItem?>(null) }
     val sheetState = rememberModalBottomSheetState(
@@ -78,7 +77,7 @@ fun MenuFoodDisplay(
         },
         onAddToCart = { menuItem, variant ->
             cartViewModel.addToCart(
-                CartItem(item = variant, name = menuItem.name),
+                CartItem(item = variant, url = menuItem.url, name = menuItem.name),
                 context.getString(R.string.added_to_cart)
             )
             scope.launch { sheetState.hide() }
