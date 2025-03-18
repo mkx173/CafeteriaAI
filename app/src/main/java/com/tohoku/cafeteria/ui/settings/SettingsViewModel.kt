@@ -10,12 +10,8 @@ import com.tohoku.cafeteria.CafeteriaApplication
 import com.tohoku.cafeteria.data.repository.PersonalInfo
 import com.tohoku.cafeteria.data.repository.SettingsRepository
 import com.tohoku.cafeteria.data.repository.SettingsState
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class SettingsViewModel(private val settingsRepository: SettingsRepository) : ViewModel() {
     // Expose settings as flows

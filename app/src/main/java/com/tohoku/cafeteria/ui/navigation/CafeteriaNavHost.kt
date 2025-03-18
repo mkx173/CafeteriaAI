@@ -2,7 +2,6 @@ package com.tohoku.cafeteria.ui.navigation
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
@@ -20,14 +19,10 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -48,8 +43,6 @@ import com.tohoku.cafeteria.ui.recommendation.RecommendationResultScreen
 import com.tohoku.cafeteria.ui.recommendation.RecommendationScreen
 import com.tohoku.cafeteria.ui.recommendation.RecommendationViewModel
 import com.tohoku.cafeteria.ui.settings.SettingsScreen
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 // Define the screens as sealed objects
 sealed class Screen(val route: String, @StringRes val label: Int) {

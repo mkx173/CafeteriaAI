@@ -2,15 +2,12 @@ package com.tohoku.cafeteria
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -19,8 +16,6 @@ import com.tohoku.cafeteria.ui.CafeteriaApp
 import com.tohoku.cafeteria.ui.settings.DarkModeOption
 import com.tohoku.cafeteria.ui.settings.SettingsViewModel
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 
 class MainActivity : ComponentActivity() {
     private lateinit var settingsRepository: SettingsRepository

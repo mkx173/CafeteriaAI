@@ -12,7 +12,6 @@ import com.tohoku.cafeteria.CafeteriaApplication
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.data.repository.FoodRepository
 import com.tohoku.cafeteria.domain.model.FoodCategory
-import com.tohoku.cafeteria.domain.model.FoodItem
 import kotlinx.coroutines.launch
 
 data class MenuUiState(

@@ -2,16 +2,10 @@ package com.tohoku.cafeteria.ui.cart
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.tohoku.cafeteria.CafeteriaApplication
-import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.domain.model.CartItem
 import com.tohoku.cafeteria.util.ToastManager
 import kotlinx.coroutines.flow.MutableStateFlow

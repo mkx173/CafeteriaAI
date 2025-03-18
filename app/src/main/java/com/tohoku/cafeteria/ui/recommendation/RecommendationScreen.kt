@@ -1,6 +1,5 @@
 package com.tohoku.cafeteria.ui.recommendation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +22,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -53,18 +51,15 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.domain.model.CartItem
-import com.tohoku.cafeteria.domain.model.FoodItem
 import com.tohoku.cafeteria.domain.model.FoodVariant
 import com.tohoku.cafeteria.ui.cart.CartViewModel
 import com.tohoku.cafeteria.ui.cart.rememberCartViewModel
 import com.tohoku.cafeteria.ui.components.CartFoodBottomSheetComponent
-import com.tohoku.cafeteria.ui.components.MenuFoodBottomSheetComponent
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
 import kotlinx.coroutines.launch
 
