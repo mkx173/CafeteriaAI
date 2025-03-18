@@ -70,4 +70,5 @@
     <string name="gram">%1$sg</string>
     <string name="add_to_cart_price">Add to Cart (JP¥%1$s)</string>
     <string name="select_size">Select Size</string>
+    <string name="back">Back</string>
 </resources>

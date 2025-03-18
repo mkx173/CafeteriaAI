@@ -28,15 +28,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navigation
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.ui.cart.CartViewModel
 import com.tohoku.cafeteria.ui.cart.rememberCartViewModel
 import com.tohoku.cafeteria.ui.history.HistoryScreen
 import com.tohoku.cafeteria.ui.menu.MenuScreen
+import com.tohoku.cafeteria.ui.recommendation.RecommendationResultScreen
 import com.tohoku.cafeteria.ui.recommendation.RecommendationScreen
 import com.tohoku.cafeteria.ui.settings.SettingsScreen
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,19 +66,6 @@ private val bottomNavItems = listOf(
     NavigationItemContent(Screen.Settings, Icons.Default.Settings)
 )
 
-object SnackbarManager {
-    private val _messages = MutableStateFlow<String?>(null)
-    val messages = _messages.asStateFlow()
-
-    fun showMessage(message: String) {
-        _messages.value = message
-    }
-
-    fun clearMessage() {
-        _messages.value = null
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CafeteriaNavHost(
@@ -84,6 +74,8 @@ fun CafeteriaNavHost(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val currentRoute = currentRoute(navController)
+    val currentDestination = navController.currentBackStackEntryAsState().value?.destination
+    val isInRecommendationSection = currentDestination?.hierarchy?.any { it.route == Screen.Recommendation.route } == true
 
     // Shared cart ViewModel
     val cartViewModel: CartViewModel = rememberCartViewModel(
@@ -94,16 +86,6 @@ fun CafeteriaNavHost(
     val cartItems by cartViewModel.cartItems.collectAsState()
     val cartItemCount = cartItems.sumOf { it.quantity }
 
-    // Collect and display messages from the SnackbarManager
-    val message by SnackbarManager.messages.collectAsState()
-
-    LaunchedEffect(message) {
-        message?.let {
-            snackbarHostState.showSnackbar(it)
-            SnackbarManager.clearMessage()
-        }
-    }
-
     Scaffold(
         modifier = modifier,
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -111,9 +93,27 @@ fun CafeteriaNavHost(
             NavigationBar {
                 bottomNavItems.forEach { navItem ->
                     NavigationBarItem(
-                        selected = currentRoute == navItem.screen.route,
+                        selected = if (navItem.screen == Screen.Recommendation) {
+                            isInRecommendationSection
+                        } else {
+                            currentRoute == navItem.screen.route
+                        },
                         onClick = {
-                            if (currentRoute != navItem.screen.route) {
+                            if (navItem.screen == Screen.Recommendation) {
+                                // If not in the recommendation section, navigate to the start destination ("main")
+                                if (!isInRecommendationSection) {
+                                    navController.navigate("main") {
+                                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                                // If in recommendation but not on the start destination, simply pop back to it
+                                else if (currentRoute != "main") {
+                                    navController.popBackStack("main", false)
+                                }
+                                // Else, if already on the "main" destination, do nothing
+                            } else if (currentRoute != navItem.screen.route) {
                                 navController.navigate(navItem.screen.route) {
                                     // Avoid building up a large stack of destinations
                                     popUpTo(navController.graph.startDestinationId) { saveState = true }
@@ -158,11 +158,27 @@ fun CafeteriaNavHost(
                     cartViewModel = cartViewModel
                 )
             }
-            composable(Screen.Recommendation.route) {
-                RecommendationScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    cartViewModel = cartViewModel
-                )
+            navigation(
+                startDestination = "main",
+                route = Screen.Recommendation.route
+            ) {
+                composable("main") {
+                    RecommendationScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        cartViewModel = cartViewModel,
+                        onGetRecommendationClick = {
+                            navController.navigate("result")
+                        }
+                    )
+                }
+                composable("result") {
+                    RecommendationResultScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        onBackClick = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
             }
             composable(Screen.History.route) {
                 HistoryScreen(

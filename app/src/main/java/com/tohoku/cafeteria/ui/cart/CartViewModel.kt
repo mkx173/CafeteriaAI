@@ -13,7 +13,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.tohoku.cafeteria.CafeteriaApplication
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.domain.model.CartItem
-import com.tohoku.cafeteria.ui.navigation.SnackbarManager
+import com.tohoku.cafeteria.util.ToastManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -44,7 +44,7 @@ class CartViewModel : ViewModel() {
 
         _cartItems.value = currentItems
         // Show confirmation message
-        SnackbarManager.showMessage(
+        ToastManager.showMessage(
             String.format(message, item.name, item.item.variantName)
         )
     }

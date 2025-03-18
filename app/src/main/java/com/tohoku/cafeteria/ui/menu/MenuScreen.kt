@@ -29,8 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.ui.cart.CartViewModel
-import com.tohoku.cafeteria.ui.navigation.SnackbarManager
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
+import com.tohoku.cafeteria.util.ToastManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,8 +45,8 @@ fun MenuScreen(
     LaunchedEffect(uiState.isErrorNew) {
         if (uiState.isErrorNew) {
             uiState.errorMessage?.let { message ->
-                SnackbarManager.showMessage(message)
-                viewModel.clearNewErrorFlag() // Only show snackbar once
+                ToastManager.showMessage(message)
+                viewModel.clearNewErrorFlag() // Only show toast once
             }
         }
     }

@@ -51,7 +51,8 @@ import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
 @Composable
 fun RecommendationScreen(
     modifier: Modifier = Modifier,
-    cartViewModel: CartViewModel = viewModel()
+    cartViewModel: CartViewModel = viewModel(),
+    onGetRecommendationClick: () -> Unit
 ) {
     val cartItems by cartViewModel.cartItems.collectAsState()
     val totalPrice by cartViewModel.totalPrice.collectAsState()
@@ -88,7 +89,7 @@ fun RecommendationScreen(
                     )
 
                     Button(
-                        onClick = { /* Implement checkout */ },
+                        onClick = onGetRecommendationClick,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(stringResource(R.string.get_recommendation))
@@ -297,7 +298,8 @@ fun RecommendationScreenPreview() {
     )
     CafeteriaAITheme {
         RecommendationScreen(
-            cartViewModel = cartViewModel
+            cartViewModel = cartViewModel,
+            onGetRecommendationClick = { }
         )
     }
 }
