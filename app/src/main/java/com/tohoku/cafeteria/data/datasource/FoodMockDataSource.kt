@@ -31,19 +31,28 @@ class FoodMockDataSource : FoodDataSource {
                     protein = 30f,
                     fat = 25f,
                     carbohydrates = 60f
+                ),
+                FoodVariantResponse(
+                    variantName = "L",
+                    variantId = 103,
+                    price = 700,
+                    calories = 700f,
+                    protein = 35f,
+                    fat = 30f,
+                    carbohydrates = 70f
                 )
             )
         )
         return listOf(
             FoodCategoryResponse(
                 category = "Burgers",
-                items = List(5) {
+                items = List(3) {
                     sampleFoods
                 }
             ),
             FoodCategoryResponse(
                 category = "Drinks",
-                items = List(5) {
+                items = List(3) {
                     sampleFoods
                 }
             )
@@ -66,7 +75,7 @@ class FoodMockDataSource : FoodDataSource {
             recommendedMealDetail = "Enjoy a balanced meal featuring \"Hamburger steak with grated Japanese radish sauce\" and \"Rice (small)\". The hamburger steak offers a delightful umami flavor, perfectly complemented by the refreshing radish. This combination provides approximately 460 kcal of energy, 17.6g of protein, and 15.2g of fat, catering to your dietary requirements. Please note that this meal is somewhat low in fiber, calcium, and veggies compared to your target nutritional goals.",
             listMeals = listOf("hamburger steak with grated japanese radish sauce", "rice (small)"),
             verboseInFunction = true,
-            recommendedMeals = listOf(101, 102),
+            recommendedMeals = listOf(101, 102, 103),
             id = "f64299e3-2985-44f6-a6ce-eedaec54c502"
         )
         return Response.success(sampleResponse)
