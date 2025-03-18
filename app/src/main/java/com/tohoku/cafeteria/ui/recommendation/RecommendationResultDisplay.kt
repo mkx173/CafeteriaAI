@@ -139,6 +139,9 @@ fun RecommendationResultDisplay (
             .padding(horizontal = dimensionResource(R.dimen.padding_medium)),
     ) {
         item {
+            Spacer(modifier = Modifier.size(dimensionResource(R.dimen.padding_small)))
+        }
+        item {
             Surface(
                 modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_xsmall)),
                 shape = MaterialTheme.shapes.medium,

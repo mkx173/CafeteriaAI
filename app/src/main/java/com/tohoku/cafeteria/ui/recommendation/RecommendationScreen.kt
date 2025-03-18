@@ -5,10 +5,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -188,8 +190,11 @@ fun RecommendationScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(innerPadding)
-                    .padding(dimensionResource(R.dimen.padding_medium))
+                    .padding(horizontal = dimensionResource(R.dimen.padding_medium))
             ) {
+                item {
+                    Spacer(modifier = Modifier.size(dimensionResource(R.dimen.padding_xsmall)))
+                }
                 items(cartItems) { item ->
                     CartItemRow(
                         item = item,
@@ -201,6 +206,9 @@ fun RecommendationScreen(
                             cartViewModel.removeFromCart(item.item.variantId)
                         }
                     )
+                }
+                item {
+                    Spacer(modifier = Modifier.size(dimensionResource(R.dimen.padding_xsmall)))
                 }
             }
         }
