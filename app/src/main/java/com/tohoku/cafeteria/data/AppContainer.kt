@@ -3,6 +3,7 @@ package com.tohoku.cafeteria.data
 import android.content.Context
 import com.example.foodnutrition.data.datasource.MenuRemoteDataSource
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.tohoku.cafeteria.data.database.AppDatabase
 import com.tohoku.cafeteria.data.datasource.MenuMockDataSource
 import com.tohoku.cafeteria.data.datasource.MenuApiService
 import com.tohoku.cafeteria.data.repository.MenuRepository
@@ -14,11 +15,16 @@ import retrofit2.Retrofit
 interface AppContainer {
     val menuRepository: MenuRepository
     val settingsRepository: SettingsRepository
+    val database: AppDatabase
 }
 
 abstract class BaseAppContainer(private val context: Context) : AppContainer {
     override val settingsRepository: SettingsRepository by lazy {
         SettingsRepository(context)
+    }
+
+    override val database: AppDatabase by lazy {
+        AppDatabase.getDatabase(context)
     }
 }
 
