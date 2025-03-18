@@ -12,16 +12,22 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.tohoku.cafeteria.CafeteriaApplication
 import com.tohoku.cafeteria.R
+import com.tohoku.cafeteria.data.entity.FoodEntity
 import com.tohoku.cafeteria.data.repository.FoodRepository
 import com.tohoku.cafeteria.data.response.RecommendationResponse
 import kotlinx.coroutines.launch
+
+enum class Rating {
+    UP, DOWN, NONE
+}
 
 data class RecommendationUiState(
     val recommendation: RecommendationResponse? = null,
     val isRefreshing: Boolean = false,
     val isErrorNew: Boolean = false,
     val errorMessage: String? = null,
-    val additionalNotes: String? = null
+    val additionalNotes: String? = null,
+    val foodRatings: Map<Int, Rating> = emptyMap()
 )
 
 class RecommendationViewModel(
@@ -61,8 +67,18 @@ class RecommendationViewModel(
         _uiState.value = _uiState.value.copy(isErrorNew = false)
     }
 
+    suspend fun getFoodByVariantId(variantId: Int): FoodEntity? {
+        return foodRepository.getFoodByVariantId(variantId)
+    }
+
     fun setAdditionalNotes(additionalNotes: String) {
         _uiState.value = _uiState.value.copy(additionalNotes = additionalNotes)
+    }
+
+    fun updateFoodRating(variantId: Int, rating: Rating) {
+        val currentRatings = _uiState.value.foodRatings.toMutableMap()
+        currentRatings[variantId] = rating
+        _uiState.value = _uiState.value.copy(foodRatings = currentRatings.toMap())
     }
 
     companion object {

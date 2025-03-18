@@ -67,6 +67,10 @@ class FoodRepository(
         )
     }
 
+    suspend fun getFoodByVariantId(variantId: Int): FoodEntity? {
+        return foodDao.getFoodByVariantId(variantId)
+    }
+
     private fun buildRecommendationQuery(settings: SettingsState, additionalNotes: String): RecommendationQuery {
         // Map gender based on the isMale flag.
         val gender = if (settings.personalInfo.isMale) "male" else "female"

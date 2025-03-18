@@ -10,5 +10,6 @@
 
     <dimen name="size_food_item_image">64dp</dimen>
     <dimen name="size_icon">16dp</dimen>
+    <dimen name="size_icon_large">20dp</dimen>
     <dimen name="width_carousel">180dp</dimen>
 </resources>

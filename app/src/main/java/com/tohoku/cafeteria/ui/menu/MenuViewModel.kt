@@ -58,16 +58,6 @@ class MenuViewModel(
         _uiState.value = _uiState.value.copy(isErrorNew = false)
     }
 
-    // Retrieve items by category name.
-    fun getItemsByCategory(categoryName: String): List<FoodItem> {
-        return _uiState.value.menuData?.find { it.category == categoryName }?.items ?: emptyList()
-    }
-
-    // Retrieve a menu item by its foodId.
-    fun getItemById(id: Int): FoodItem? {
-        return _uiState.value.menuData?.flatMap { it.items }?.firstOrNull { it.foodId == id }
-    }
-
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

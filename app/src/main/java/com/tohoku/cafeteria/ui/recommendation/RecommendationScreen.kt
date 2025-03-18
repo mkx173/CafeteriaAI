@@ -74,7 +74,7 @@ fun RecommendationScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.padding_medium))
+                    .padding(vertical = dimensionResource(R.dimen.padding_medium))
             ) {
                 OutlinedTextField(
                     value = additionalNotes,
@@ -109,7 +109,7 @@ fun RecommendationScreen(
                         recommendationViewModel.setAdditionalNotes(additionalNotes)
                         onGetRecommendationClick()
                     },
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = dimensionResource(R.dimen.padding_small))
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = dimensionResource(R.dimen.padding_medium))
                 ) {
                     Text(stringResource(R.string.get_recommendation))
                 }

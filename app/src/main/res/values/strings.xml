@@ -53,6 +53,8 @@
     <string name="list_food_allergies">List any food allergies</string>
     <string name="cart_empty">Your cart is empty</string>
     <string name="get_recommendation">Get Recommendation</string>
+    <string name="get_new_recommendation">Get New Recommendation</string>
+    <string name="save_to_history">Save to History</string>
     <string name="total">Total</string>
     <string name="decrease">Decrease</string>
     <string name="increase">Increase</string>
@@ -72,4 +74,8 @@
     <string name="select_size">Select Size</string>
     <string name="back">Back</string>
     <string name="additional_instructions">Additional instructions</string>
+    <string name="your_recommended_meals">Your Recommended Meals</string>
+    <string name="thumbs_up">Thumbs up</string>
+    <string name="thumbs_down">Thumbs down</string>
+    <string name="item_not_found">Item not found</string>
 </resources>

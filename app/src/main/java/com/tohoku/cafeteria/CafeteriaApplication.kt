@@ -11,7 +11,7 @@ class CafeteriaApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        appContainer = DefaultAppContainer(this)
+        appContainer = MockAppContainer(this)
         ToastManager.init(this)
     }
 }
