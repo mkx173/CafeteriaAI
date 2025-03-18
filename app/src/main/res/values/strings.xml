@@ -53,7 +53,7 @@
     <string name="list_food_allergies">List any food allergies</string>
     <string name="cart_empty">Your cart is empty</string>
     <string name="get_recommendation">Get Recommendation</string>
-    <string name="get_new_recommendation">Get New Recommendation</string>
+    <string name="get_new_recommendation">Refresh</string>
     <string name="save_to_history">Save to History</string>
     <string name="total">Total</string>
     <string name="decrease">Decrease</string>

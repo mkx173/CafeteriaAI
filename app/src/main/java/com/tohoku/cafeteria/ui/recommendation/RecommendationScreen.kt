@@ -1,5 +1,6 @@
 package com.tohoku.cafeteria.ui.recommendation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -23,6 +25,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -103,47 +106,62 @@ fun RecommendationScreen(
             )
         },
         bottomBar = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = dimensionResource(R.dimen.padding_medium))
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(
+                    topStart = dimensionResource(R.dimen.round_corner_radius_medium),
+                    topEnd = dimensionResource(R.dimen.round_corner_radius_medium),
+                    bottomStart = 0.dp,
+                    bottomEnd = 0.dp
+                ),
+                color = MaterialTheme.colorScheme.surfaceContainerLow,
+                tonalElevation = 1.dp
             ) {
-                OutlinedTextField(
-                    value = additionalNotes,
-                    onValueChange = { newText -> additionalNotes = newText },
-                    label = { Text(stringResource(R.string.additional_instructions)) },
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = dimensionResource(R.dimen.padding_medium))
-                        .padding(bottom = dimensionResource(R.dimen.padding_xsmall)),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done
-                    ),
-                )
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = stringResource(R.string.total),
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    },
-                    trailingContent = {
-                        Text(
-                            text = stringResource(R.string.price, totalPrice),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                )
-
-                Button(
-                    onClick = {
-                        recommendationViewModel.setAdditionalNotes(additionalNotes)
-                        onGetRecommendationClick()
-                    },
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = dimensionResource(R.dimen.padding_medium))
+                        .padding(top = dimensionResource(R.dimen.padding_small), bottom = dimensionResource(R.dimen.padding_medium))
                 ) {
-                    Text(stringResource(R.string.get_recommendation))
+                    OutlinedTextField(
+                        value = additionalNotes,
+                        onValueChange = { newText -> additionalNotes = newText },
+                        label = { Text(stringResource(R.string.additional_instructions)) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = dimensionResource(R.dimen.padding_medium))
+                            .padding(bottom = dimensionResource(R.dimen.padding_xsmall)),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done
+                        ),
+                    )
+                    ListItem(
+                        colors = ListItemDefaults.colors(
+                            containerColor = Color.Transparent
+                        ),
+                        headlineContent = {
+                            Text(
+                                text = stringResource(R.string.total),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        },
+                        trailingContent = {
+                            Text(
+                                text = stringResource(R.string.price, totalPrice),
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    )
+
+                    Button(
+                        onClick = {
+                            recommendationViewModel.setAdditionalNotes(additionalNotes)
+                            onGetRecommendationClick()
+                        },
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = dimensionResource(R.dimen.padding_medium))
+                    ) {
+                        Text(stringResource(R.string.get_recommendation))
+                    }
                 }
             }
         }
