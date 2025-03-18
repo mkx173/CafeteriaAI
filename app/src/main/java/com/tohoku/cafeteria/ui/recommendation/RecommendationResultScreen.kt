@@ -29,6 +29,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -63,6 +65,7 @@ fun RecommendationResultScreen(
     var totalPrice by remember { mutableIntStateOf(0) }
 
     var onSaveToHistoryClick by remember { mutableStateOf({}) }
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     LaunchedEffect(uiState.isErrorNew) {
         if (uiState.isErrorNew) {
@@ -74,7 +77,7 @@ fun RecommendationResultScreen(
     }
 
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(text = stringResource(R.string.tab_recommendation)) },
@@ -85,7 +88,8 @@ fun RecommendationResultScreen(
                             contentDescription = stringResource(R.string.back)
                         )
                     }
-                }
+                },
+                scrollBehavior = scrollBehavior
             )
         },
         bottomBar = {

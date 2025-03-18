@@ -1,8 +1,11 @@
 package com.tohoku.cafeteria.ui.navigation
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.History
@@ -16,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -74,7 +78,6 @@ fun CafeteriaNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
     val currentRoute = currentRoute(navController)
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
     val isInRecommendationSection = currentDestination?.hierarchy?.any { it.route == Screen.Recommendation.route } == true
@@ -93,7 +96,6 @@ fun CafeteriaNavHost(
 
     Scaffold(
         modifier = modifier,
-        snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
             NavigationBar {
                 bottomNavItems.forEach { navItem ->
@@ -143,12 +145,12 @@ fun CafeteriaNavHost(
                     )
                 }
             }
-        }
+        },
+        contentWindowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.statusBars)
     ) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = Screen.Menu.route,
-            modifier = Modifier.consumeWindowInsets(innerPadding)
         ) {
             composable(Screen.Menu.route) {
                 MenuScreen(
