@@ -10,4 +10,6 @@ class FoodRemoteDataSource(private val service: FoodApiService) : FoodDataSource
     override suspend fun getMenu(): List<FoodCategoryResponse> = service.getMenu()
     override suspend fun requestRecommendation(query: String): Response<RecommendationResponse> =
         service.requestRecommendation(query)
+    override suspend fun requestNewRecommendation(query: String, rating: String): Response<RecommendationResponse> =
+        service.requestNewRecommendation(query, rating)
 }

@@ -66,6 +66,35 @@ class RecommendationViewModel(
         }
     }
 
+    fun fetchNewRecommendation(cartItems: List<CartItem>) {
+        // Clear any previous error and set refreshing state.
+        _uiState.value = _uiState.value.copy(isRefreshing = true)
+        viewModelScope.launch {
+            try {
+                val response = foodRepository.requestNewRecommendation(
+                    cartItems,
+                    _uiState.value.additionalNotes ?: "",
+                    _uiState.value.foodRatings
+                )
+                if (!response.isSuccessful) {
+                    throw Exception("Request failed with code: ${response.code()}")
+                }
+                _uiState.value = _uiState.value.copy(
+                    recommendation = response.body(),
+                    errorMessage = null,
+                    isErrorNew = false
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    errorMessage = e.message ?: application.getString(R.string.unknown_error_occurred),
+                    isErrorNew = true
+                )
+            } finally {
+                _uiState.value = _uiState.value.copy(isRefreshing = false)
+            }
+        }
+    }
+
     fun clearNewErrorFlag() {
         _uiState.value = _uiState.value.copy(isErrorNew = false)
     }
@@ -78,13 +107,19 @@ class RecommendationViewModel(
         _uiState.value = _uiState.value.copy(additionalNotes = additionalNotes)
     }
 
-    fun updateFoodRating(variantId: Int, rating: Rating) {
+    fun updateFoodRating(variantId: Int, rating: Rating, skipIfPresent: Boolean = false) {
+        if (skipIfPresent && _uiState.value.foodRatings.containsKey(variantId)) {
+            return
+        }
         val currentRatings = _uiState.value.foodRatings.toMutableMap()
         currentRatings[variantId] = rating
         _uiState.value = _uiState.value.copy(foodRatings = currentRatings.toMap())
     }
 
-    fun updateFoodSelected(variantId: Int, isSelected: Boolean) {
+    fun updateFoodSelected(variantId: Int, isSelected: Boolean, skipIfPresent: Boolean = false) {
+        if (skipIfPresent && _uiState.value.foodSelected.containsKey(variantId)) {
+            return
+        }
         val currentSelected = _uiState.value.foodSelected.toMutableMap()
         currentSelected[variantId] = isSelected
         _uiState.value = _uiState.value.copy(foodSelected = currentSelected.toMap())

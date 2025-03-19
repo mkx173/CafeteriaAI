@@ -144,8 +144,8 @@ fun RecommendationResultDisplay (
             val foodItem = getFoodByVariantId(variantId)
             recommendedFoods.add(foodItem)
             foodItem?.let {
-                viewModel.updateFoodRating(foodItem.variantId, Rating.NONE)
-                viewModel.updateFoodSelected(foodItem.variantId, true)
+                viewModel.updateFoodRating(foodItem.variantId, Rating.NONE, skipIfPresent = true)
+                viewModel.updateFoodSelected(foodItem.variantId, true, skipIfPresent = true)
             }
         }
         val computedPrice = recommendedFoods.filterNotNull().sumOf { it.price }

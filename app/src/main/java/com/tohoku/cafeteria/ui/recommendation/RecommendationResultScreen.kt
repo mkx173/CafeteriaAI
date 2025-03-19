@@ -90,7 +90,7 @@ fun RecommendationResultScreen(
             )
         },
         bottomBar = {
-            if (!uiState.isRefreshing && uiState.errorMessage == null) {
+            if (!uiState.isRefreshing && (uiState.errorMessage == null || uiState.recommendation != null)) {
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(
@@ -145,7 +145,7 @@ fun RecommendationResultScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Button(
-                                onClick = { },
+                                onClick = { viewModel.fetchNewRecommendation(cartViewModel.getCartItems()) },
                                 modifier = Modifier
                                     .weight(1f)
                                     .padding(horizontal = dimensionResource(R.dimen.padding_medium))

@@ -74,7 +74,29 @@ class FoodMockDataSource : FoodDataSource {
             recommendedMealDetail = "Enjoy a balanced meal featuring \"Hamburger steak with grated Japanese radish sauce\" and \"Rice (small)\". The hamburger steak offers a delightful umami flavor, perfectly complemented by the refreshing radish. This combination provides approximately 460 kcal of energy, 17.6g of protein, and 15.2g of fat, catering to your dietary requirements. Please note that this meal is somewhat low in fiber, calcium, and veggies compared to your target nutritional goals.",
             listMeals = listOf("hamburger steak with grated japanese radish sauce", "rice (small)"),
             verboseInFunction = true,
-            recommendedMeals = listOf(101, 102, 103),
+            recommendedMeals = listOf(101),
+            id = "f64299e3-2985-44f6-a6ce-eedaec54c502"
+        )
+        return Response.success(sampleResponse)
+    }
+
+    override suspend fun requestNewRecommendation(query: String, rating: String): Response<RecommendationResponse> {
+        val sampleResponse = RecommendationResponse(
+            additionalNotes = "24 years old, 50 kg, 165 cm, lactose intolerant.",
+            detailNutritions = listOf(
+                "Based on the user's age, weight, and height, the minimum energy intake is estimated using the Harris-Benedict equation and considering a sedentary lifestyle (Roza & Shizgal, 1984).",
+                "According to current guidelines, the minimum protein intake for adults is 0.8 grams per kilogram of body weight (WHO, 2007).",
+                "Based on a 24-year-old female, with a weight of 50 kg, the recommended minimum fat intake is approximately 0.8-1.0 grams per kilogram of body weight according to current nutritional guidelines [WARNING] (https://www.calculator.net/fat-calculator.html).",
+                "According to current dietary guidelines and considering the user's age, weight, and height, a minimum carbohydrate intake of 130 grams per day is recommended to support basic metabolic functions (National Academies of Sciences, Engineering, and Medicine, 2005).",
+                "Based on general dietary guidelines and considering the user's age, the recommended minimum daily fiber intake is approximately 25 grams (Anderson et al., 1998).",
+                "According to the National Institutes of Health, adults aged 19-50 years need 1000 mg of calcium daily to maintain bone health, which is especially important for lactose-intolerant individuals who may have limited dairy intake (NIH, n.d.).",
+                "Given the user's age, weight, height, and lactose intolerance, coupled with the need to determine a minimum vegetable intake, I will use the tavily_search_tool to find guidelines since I don't have specific journal data [WARNING]."
+            ),
+            minNutritions = listOf(1320, 40, 40, 130, 25, 1000, 400),
+            recommendedMealDetail = "Enjoy a balanced meal featuring \"Hamburger steak with grated Japanese radish sauce\" and \"Rice (small)\". The hamburger steak offers a delightful umami flavor, perfectly complemented by the refreshing radish. This combination provides approximately 460 kcal of energy, 17.6g of protein, and 15.2g of fat, catering to your dietary requirements. Please note that this meal is somewhat low in fiber, calcium, and veggies compared to your target nutritional goals.",
+            listMeals = listOf("hamburger steak with grated japanese radish sauce", "rice (small)"),
+            verboseInFunction = true,
+            recommendedMeals = listOf(102, 103),
             id = "f64299e3-2985-44f6-a6ce-eedaec54c502"
         )
         return Response.success(sampleResponse)

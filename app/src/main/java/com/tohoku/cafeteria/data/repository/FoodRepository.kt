@@ -5,11 +5,13 @@ import com.tohoku.cafeteria.data.dao.FoodHistoryDao
 import com.tohoku.cafeteria.data.datasource.FoodDataSource
 import com.tohoku.cafeteria.data.entity.FoodEntity
 import com.tohoku.cafeteria.data.entity.FoodHistoryEntity
+import com.tohoku.cafeteria.data.request.RatingQuery
 import com.tohoku.cafeteria.data.request.RecommendationQuery
 import com.tohoku.cafeteria.data.response.RecommendationResponse
 import com.tohoku.cafeteria.domain.mapper.FoodCategoryMapper
 import com.tohoku.cafeteria.domain.model.CartItem
 import com.tohoku.cafeteria.domain.model.FoodCategory
+import com.tohoku.cafeteria.ui.recommendation.Rating
 import com.tohoku.cafeteria.ui.settings.BmrCalculationOption
 import com.tohoku.cafeteria.ui.settings.ExerciseLevel
 import kotlinx.coroutines.flow.Flow
@@ -108,6 +110,21 @@ class FoodRepository(
         return dataSource.requestRecommendation(Json.encodeToString(requestData))
     }
 
+    suspend fun requestNewRecommendation(cartItems: List<CartItem>, additionalNotes: String, ratingsMap: Map<Int, Rating>): Response<RecommendationResponse> {
+        // Get the current settings from the settings repository.
+        val currentSettings = settingsRepository.settingsState.value
+
+        // Build a RecommendationQuery from your SettingsState and additional notes.
+        val queryData = buildRecommendationQuery(currentSettings, cartItems, additionalNotes)
+        val ratingData = ratingsMap.map { (variantId, rating) -> buildRatingQuery(variantId, rating) }
+
+        // Call the recommendation endpoint.
+        return dataSource.requestNewRecommendation(
+            Json.encodeToString(queryData),
+            Json.encodeToString(ratingData)
+        )
+    }
+
     suspend fun getFoodByVariantId(variantId: Int): FoodEntity? {
         return foodDao.getFoodByVariantId(variantId)
     }
@@ -122,6 +139,15 @@ class FoodRepository(
                 )
             }
         }
+    }
+
+    private fun buildRatingQuery(variantId: Int, rating: Rating): RatingQuery {
+        val ratingValue = when (rating) {
+            Rating.UP -> "like"
+            Rating.DOWN -> "dislike"
+            Rating.NONE -> "none"
+        }
+        return RatingQuery(variantId, ratingValue)
     }
 
     private fun buildRecommendationQuery(settings: SettingsState, cartItems: List<CartItem>, additionalNotes: String): RecommendationQuery {

@@ -14,5 +14,14 @@ interface FoodApiService {
 
     @FormUrlEncoded
     @POST("api/request_recommendation/")
-    suspend fun requestRecommendation(@Field("query") query: String): Response<RecommendationResponse>
+    suspend fun requestRecommendation(
+        @Field("query") query: String
+    ): Response<RecommendationResponse>
+
+    @FormUrlEncoded
+    @POST("api/get_new_recommendation/")
+    suspend fun requestNewRecommendation(
+        @Field("query") query: String,
+        @Field("rating") rating: String,
+    ): Response<RecommendationResponse>
 }
