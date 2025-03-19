@@ -1,5 +1,8 @@
 package com.tohoku.cafeteria.ui.menu
 
+import android.content.ContentResolver
+import android.net.Uri
+import android.provider.OpenableColumns
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -14,6 +17,11 @@ import com.tohoku.cafeteria.data.repository.FoodRepository
 import com.tohoku.cafeteria.domain.model.FoodCategory
 import com.tohoku.cafeteria.util.ToastManager
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 
 data class MenuUiState(
     val menuData: List<FoodCategory>? = null,
@@ -75,6 +83,72 @@ class MenuViewModel(
                 _uiState.value = _uiState.value.copy(isRefreshing = false)
             }
         }
+    }
+
+    // Add this function to MenuViewModel
+    fun uploadMenuImage(uri: Uri, method: String = "GoogleOCR") {
+        _uiState.value = _uiState.value.copy(isRefreshing = true)
+        viewModelScope.launch {
+            try {
+                // Get content resolver from application
+                val contentResolver = application.contentResolver
+
+                // Create file from Uri
+                val inputStream = contentResolver.openInputStream(uri)
+                val fileName = getFileName(contentResolver, uri) ?: "upload.jpg"
+                val file = File(application.cacheDir, fileName)
+                file.outputStream().use { outputStream ->
+                    inputStream?.copyTo(outputStream)
+                }
+                inputStream?.close()
+
+                // Create RequestBody and MultipartBody.Part
+                val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+                val imagePart = MultipartBody.Part.createFormData("image_upload", file.name, requestFile)
+                val methodRequestBody = method.toRequestBody("text/plain".toMediaTypeOrNull())
+
+                // Upload the image
+                foodRepository.uploadMenuImage(imagePart, methodRequestBody)
+
+                // Refresh menu to show the updated data
+                refreshMenu()
+
+                // Show success message
+                ToastManager.run { showMessage(application.getString(R.string.upload_successful)) }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    errorMessage = e.message ?: application.getString(R.string.unknown_error_occurred)
+                )
+                ToastManager.showMessage(
+                    e.message ?: application.getString(R.string.unknown_error_occurred)
+                )
+            } finally {
+                _uiState.value = _uiState.value.copy(isRefreshing = false)
+            }
+        }
+    }
+
+    // Helper function to get file name from URI
+    private fun getFileName(contentResolver: ContentResolver, uri: Uri): String? {
+        var result: String? = null
+        if (uri.scheme == "content") {
+            contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val columnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    if (columnIndex != -1) {
+                        result = cursor.getString(columnIndex)
+                    }
+                }
+            }
+        }
+        if (result == null) {
+            result = uri.path
+            val cut = result?.lastIndexOf('/')
+            if (cut != -1) {
+                result = result?.substring(cut!! + 1)
+            }
+        }
+        return result
     }
 
     companion object {
