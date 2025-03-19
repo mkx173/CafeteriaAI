@@ -81,6 +81,8 @@ class RecommendationViewModel(
                 _uiState.value = _uiState.value.copy(
                     recommendation = response.body(),
                     errorMessage = null,
+                    foodSelected = emptyMap(),
+                    foodRatings = emptyMap()
                 )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
