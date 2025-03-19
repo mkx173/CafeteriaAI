@@ -226,7 +226,11 @@ fun FoodHistoryItem(historyItem: FoodHistoryWithDetails, handleItemClick: (FoodE
                     .padding(vertical = dimensionResource(R.dimen.padding_small)),
                 headlineContent = {
                     Text(
-                        text = stringResource(R.string.name_variant_name, food.foodName, food.variantName),
+                        text = if (food.variantName != stringResource(R.string.single)) {
+                            stringResource(R.string.name_variant_name, food.foodName, food.variantName)
+                        } else {
+                            food.foodName
+                        },
                         style = MaterialTheme.typography.bodyLarge
                     )
                 },

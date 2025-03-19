@@ -244,7 +244,11 @@ fun CartItemRow(
                 .padding(vertical = dimensionResource(R.dimen.padding_small)),
             headlineContent = {
                 Text(
-                    text = stringResource(R.string.name_variant_name, item.name, item.item.variantName),
+                    text = if (item.item.variantName != stringResource(R.string.single)) {
+                        stringResource(R.string.name_variant_name, item.name, item.item.variantName)
+                    } else {
+                        item.name
+                    },
                     style = MaterialTheme.typography.bodyLarge
                 )
             },
@@ -279,7 +283,13 @@ fun CartItemRow(
             },
             trailingContent = {
                 IconButton(onClick = {
-                    showConfirmation(context.getString(R.string.confirm_remove_cart, item.name, item.item.variantName)) {
+                    showConfirmation(
+                        if (item.item.variantName == context.getString(R.string.single)) {
+                            context.getString(R.string.confirm_remove_cart, item.name)
+                        } else {
+                            context.getString(R.string.confirm_remove_cart_variant, item.name, item.item.variantName)
+                        }
+                    ) {
                         onRemoveClick()
                     }
                 }) {
@@ -354,7 +364,9 @@ fun RecommendationScreenPreview() {
             name = "Sample Burger",
             url = "https://media.istockphoto.com/id/520410807/photo/cheeseburger.jpg?s=612x612&w=0&k=20&c=fG_OrCzR5HkJGI8RXBk76NwxxTasMb1qpTVlEM0oyg4="
         ),
+        singleVariantName = stringResource(R.string.single),
         message = stringResource(R.string.added_to_cart),
+        variantMessage = stringResource(R.string.added_to_cart_variant),
         alreadyInCartMessage = stringResource(R.string.item_already_in_cart)
     )
     cartViewModel.addToCart(
@@ -371,7 +383,9 @@ fun RecommendationScreenPreview() {
             name = "Sample Burger",
             url = "https://media.istockphoto.com/id/520410807/photo/cheeseburger.jpg?s=612x612&w=0&k=20&c=fG_OrCzR5HkJGI8RXBk76NwxxTasMb1qpTVlEM0oyg4="
         ),
+        singleVariantName = stringResource(R.string.single),
         message = stringResource(R.string.added_to_cart),
+        variantMessage = stringResource(R.string.added_to_cart_variant),
         alreadyInCartMessage = stringResource(R.string.item_already_in_cart)
     )
     CafeteriaAITheme {

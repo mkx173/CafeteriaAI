@@ -55,7 +55,12 @@ fun FoodEntityBottomSheetComponent(
 
                 // Food name
                 Text(
-                    text = stringResource(R.string.name_variant_name, selectedItem.foodName, selectedItem.variantName),
+                    text =
+                        if (selectedItem.variantName != stringResource(R.string.single)) {
+                            stringResource(R.string.name_variant_name, selectedItem.foodName, selectedItem.variantName)
+                        } else {
+                            selectedItem.foodName
+                        },
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(vertical = dimensionResource(R.dimen.padding_medium))
                 )

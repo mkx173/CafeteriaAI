@@ -55,7 +55,12 @@ fun CartItemBottomSheetComponent(
 
                 // Food name
                 Text(
-                    text = stringResource(R.string.name_variant_name, selectedItem.name, selectedItem.item.variantName),
+                    text =
+                        if (selectedItem.item.variantName != stringResource(R.string.single)) {
+                            stringResource(R.string.name_variant_name, selectedItem.name, selectedItem.item.variantName)
+                        } else {
+                            selectedItem.name
+                        },
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(vertical = dimensionResource(R.dimen.padding_medium))
                 )

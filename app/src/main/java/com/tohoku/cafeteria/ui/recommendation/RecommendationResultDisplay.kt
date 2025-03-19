@@ -201,7 +201,13 @@ fun RecommendationResultDisplay (
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = dimensionResource(R.dimen.padding_small)),
-                        headlineContent = { Text(text = stringResource(R.string.name_variant_name, foodItem.foodName, foodItem.variantName)) },
+                        headlineContent = { Text(
+                            text = if (foodItem.variantName != stringResource(R.string.single)) {
+                                stringResource(R.string.name_variant_name, foodItem.foodName, foodItem.variantName)
+                            } else {
+                                foodItem.foodName
+                            })
+                        },
                         supportingContent = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(

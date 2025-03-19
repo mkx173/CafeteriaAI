@@ -60,10 +60,12 @@
     <string name="decrease">Decrease</string>
     <string name="increase">Increase</string>
     <string name="remove">Remove</string>
-    <string name="confirm_remove_cart">Do you want to remove %1$s (%2$s) from the cart?</string>
+    <string name="confirm_remove_cart">Do you want to remove %1$s from the cart?</string>
+    <string name="confirm_remove_cart_variant">Do you want to remove %1$s (%2$s) from the cart?</string>
     <string name="confirmation">Confirmation</string>
     <string name="yes">Yes</string>
-    <string name="added_to_cart">%1$s (%2$s) added to cart</string>
+    <string name="added_to_cart">%1$s added to cart</string>
+    <string name="added_to_cart_variant">%1$s (%2$s) added to cart</string>
     <string name="name_variant_name">%1$s (%2$s)</string>
     <string name="nutrition_information">Nutrition Information</string>
     <string name="calories">Calories</string>
@@ -85,4 +87,5 @@
     <string name="no_history_found">No history found</string>
     <string name="error_loading_history">Error loading history</string>
     <string name="item_already_in_cart">Item already in cart</string>
+    <string name="single">Single</string>
 </resources>

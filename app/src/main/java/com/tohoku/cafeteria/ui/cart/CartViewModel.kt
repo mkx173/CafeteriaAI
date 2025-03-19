@@ -26,7 +26,12 @@ class CartViewModel : ViewModel() {
         initialValue = 0.0
     )
 
-    fun addToCart(item: CartItem, message: String, alreadyInCartMessage: String) {
+    fun addToCart(item: CartItem,
+                  singleVariantName: String,
+                  message: String,
+                  variantMessage: String,
+                  alreadyInCartMessage: String
+    ) {
         val currentItems = _cartItems.value.toMutableList()
         val existingItem = currentItems.find { it.item.variantId == item.item.variantId }
 
@@ -39,9 +44,16 @@ class CartViewModel : ViewModel() {
 
         _cartItems.value = currentItems
         // Show confirmation message
-        ToastManager.showMessage(
-            String.format(message, item.name, item.item.variantName)
-        )
+        if (item.item.variantName == singleVariantName) {
+            ToastManager.showMessage(
+                String.format(message, item.name)
+            )
+        } else {
+            ToastManager.showMessage(
+                String.format(variantMessage, item.name, item.item.variantName)
+            )
+        }
+
     }
 
     fun getCartItems(): List<CartItem> {
