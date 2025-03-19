@@ -95,6 +95,7 @@ fun CartItemBottomSheetComponent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = dimensionResource(R.dimen.padding_medium))
+                    .padding(bottom = dimensionResource(R.dimen.padding_medium))
             ) {
                 Button(
                     onClick = onDismiss,

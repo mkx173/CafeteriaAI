@@ -115,6 +115,7 @@ fun FoodSelectorBottomSheetComponent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = dimensionResource(R.dimen.padding_small))
+                        .padding(bottom = dimensionResource(R.dimen.padding_medium))
                 ) {
                     Button(
                         onClick = {
