@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.domain.model.CartItem
 import com.tohoku.cafeteria.util.ToastManager
 import kotlinx.coroutines.flow.MutableStateFlow

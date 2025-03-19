@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import java.util.Locale
 
 sealed class HistoryState {
     object Loading : HistoryState()
@@ -69,7 +70,7 @@ class HistoryViewModel(
                 val day = calendar.get(Calendar.DAY_OF_MONTH)
 
                 // Format: yyyy/MM/dd
-                String.format("%04d/%02d/%02d", year, month, day)
+                String.format(Locale.getDefault(), "%04d/%02d/%02d", year, month, day)
             }
             .map { (date, historyItems) ->
                 // Group items by meal option within each date
@@ -82,11 +83,11 @@ class HistoryViewModel(
                         )
                     }
                     .sortedBy { mealGroup ->
-                        // Sort meal groups by: Breakfast, Lunch, Dinner
+                        // Sort meal groups by: Dinner, Lunch, Breakfast
                         when (mealGroup.mealOption) {
-                            MealOption.BREAKFAST.key -> 0
+                            MealOption.DINNER.key -> 0
                             MealOption.LUNCH.key -> 1
-                            MealOption.DINNER.key -> 2
+                            MealOption.BREAKFAST.key -> 2
                             else -> 3
                         }
                     }
