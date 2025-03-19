@@ -2,6 +2,7 @@ package com.tohoku.cafeteria.ui.navigation
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
@@ -142,6 +143,7 @@ fun CafeteriaNavHost(
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.statusBars)
     ) { innerPadding ->
         NavHost(
+            modifier = Modifier.consumeWindowInsets(innerPadding),
             navController = navController,
             startDestination = Screen.Menu.route,
         ) {
