@@ -161,7 +161,7 @@ fun CafeteriaNavHost(
                         cartViewModel = cartViewModel,
                         recommendationViewModel = recommendationViewModel,
                         onGetRecommendationClick = {
-                            recommendationViewModel.fetchRecommendation()
+                            recommendationViewModel.fetchRecommendation(cartViewModel.getCartItems())
                             navController.navigate("result")
                         }
                     )
@@ -172,7 +172,8 @@ fun CafeteriaNavHost(
                         viewModel = recommendationViewModel,
                         onBackClick = {
                             navController.popBackStack()
-                        }
+                        },
+                        cartViewModel = cartViewModel
                     )
                 }
             }

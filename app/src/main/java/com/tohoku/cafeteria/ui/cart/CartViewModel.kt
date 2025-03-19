@@ -43,6 +43,10 @@ class CartViewModel : ViewModel() {
         )
     }
 
+    fun getCartItems(): List<CartItem> {
+        return _cartItems.value
+    }
+
     fun removeFromCart(itemId: Int) {
         val currentItems = _cartItems.value.toMutableList()
         currentItems.removeIf { it.item.variantId == itemId }

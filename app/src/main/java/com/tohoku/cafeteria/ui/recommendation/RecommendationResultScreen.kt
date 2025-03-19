@@ -43,6 +43,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tohoku.cafeteria.R
+import com.tohoku.cafeteria.ui.cart.CartViewModel
 import com.tohoku.cafeteria.ui.menu.ErrorScreen
 import com.tohoku.cafeteria.util.ToastManager
 
@@ -51,6 +52,7 @@ import com.tohoku.cafeteria.util.ToastManager
 fun RecommendationResultScreen(
     modifier: Modifier = Modifier,
     viewModel: RecommendationViewModel = viewModel(factory = RecommendationViewModel.Factory),
+    cartViewModel: CartViewModel,
     onBackClick: () -> Unit
 ) {
     val uiState = viewModel.uiState.value
@@ -188,13 +190,13 @@ fun RecommendationResultScreen(
                 uiState.errorMessage != null -> {
                     ErrorScreen(
                         message = uiState.errorMessage,
-                        onRetry = { viewModel.fetchRecommendation() }
+                        onRetry = { viewModel.fetchRecommendation(cartViewModel.getCartItems()) }
                     )
                 }
                 else -> {
                     ErrorScreen(
                         message = stringResource(R.string.unknown_error_occurred),
-                        onRetry = { viewModel.fetchRecommendation() }
+                        onRetry = { viewModel.fetchRecommendation(cartViewModel.getCartItems()) }
                     )
                 }
             }

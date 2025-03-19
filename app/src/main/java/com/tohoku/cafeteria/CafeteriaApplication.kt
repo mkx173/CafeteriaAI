@@ -1,7 +1,8 @@
-package com.tohoku.cafeteria;
+package com.tohoku.cafeteria
 
 import android.app.Application
 import com.tohoku.cafeteria.data.AppContainer
+import com.tohoku.cafeteria.data.DefaultAppContainer
 import com.tohoku.cafeteria.data.MockAppContainer
 import com.tohoku.cafeteria.util.ToastManager
 
@@ -10,7 +11,7 @@ class CafeteriaApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        appContainer = MockAppContainer(this)
+        appContainer = DefaultAppContainer(this)
         ToastManager.init(this)
     }
 }

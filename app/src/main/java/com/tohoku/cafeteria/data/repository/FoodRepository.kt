@@ -7,6 +7,7 @@ import com.tohoku.cafeteria.data.request.RecommendationQuery
 import com.tohoku.cafeteria.data.request.RecommendationRequest
 import com.tohoku.cafeteria.data.response.RecommendationResponse
 import com.tohoku.cafeteria.domain.mapper.FoodCategoryMapper
+import com.tohoku.cafeteria.domain.model.CartItem
 import com.tohoku.cafeteria.domain.model.FoodCategory
 import com.tohoku.cafeteria.ui.settings.BmrCalculationOption
 import com.tohoku.cafeteria.ui.settings.ExerciseLevel
@@ -52,12 +53,12 @@ class FoodRepository(
     }
 
     // Build the recommendation request using current settings and then call the API.
-    suspend fun requestRecommendation(additionalNotes: String): Response<RecommendationResponse> {
+    suspend fun requestRecommendation(cartItems: List<CartItem>, additionalNotes: String): Response<RecommendationResponse> {
         // Get the current settings from the settings repository.
         val currentSettings = settingsRepository.settingsState.value
 
         // Build a RecommendationRequest from your SettingsState and additional notes.
-        val requestData = buildRecommendationQuery(currentSettings, additionalNotes)
+        val requestData = buildRecommendationQuery(currentSettings, cartItems, additionalNotes)
 
         // Call the recommendation endpoint.
         return dataSource.requestRecommendation(
@@ -71,7 +72,7 @@ class FoodRepository(
         return foodDao.getFoodByVariantId(variantId)
     }
 
-    private fun buildRecommendationQuery(settings: SettingsState, additionalNotes: String): RecommendationQuery {
+    private fun buildRecommendationQuery(settings: SettingsState, cartItems: List<CartItem>, additionalNotes: String): RecommendationQuery {
         // Map gender based on the isMale flag.
         val gender = if (settings.personalInfo.isMale) "male" else "female"
 
@@ -101,6 +102,7 @@ class FoodRepository(
             age = age,
             height = height,
             weight = weight,
+            cartItems = cartItems.map { it.item.variantId },
             bmrCalculationMethod = bmrCalculationMethod,
             bmr = settings.customBmrValue,
             activityLevel = activityLevel,

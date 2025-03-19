@@ -9,6 +9,8 @@ data class RecommendationQuery(
     val age: Int,
     val height: Int,
     val weight: Int,
+    @SerialName(value = "cart_items")
+    val cartItems: List<Int>,
     @SerialName(value = "bmr_calculation_method")
     val bmrCalculationMethod: String,
     val bmr: Int,

@@ -13,6 +13,7 @@ import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.data.entity.FoodEntity
 import com.tohoku.cafeteria.data.repository.FoodRepository
 import com.tohoku.cafeteria.data.response.RecommendationResponse
+import com.tohoku.cafeteria.domain.model.CartItem
 import kotlinx.coroutines.launch
 
 enum class Rating {
@@ -37,12 +38,15 @@ class RecommendationViewModel(
     private val _uiState = mutableStateOf(RecommendationUiState())
     val uiState: State<RecommendationUiState> = _uiState
 
-    fun fetchRecommendation() {
+    fun fetchRecommendation(cartItems: List<CartItem>) {
         // Clear any previous error and set refreshing state.
         _uiState.value = _uiState.value.copy(isRefreshing = true)
         viewModelScope.launch {
             try {
-                val response = foodRepository.requestRecommendation(_uiState.value.additionalNotes ?: "")
+                val response = foodRepository.requestRecommendation(
+                    cartItems,
+                    _uiState.value.additionalNotes ?: ""
+                )
                 if (!response.isSuccessful) {
                     throw Exception("Request failed with code: ${response.code()}")
                 }
