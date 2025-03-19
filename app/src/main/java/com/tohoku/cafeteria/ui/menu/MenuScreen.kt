@@ -2,16 +2,18 @@ package com.tohoku.cafeteria.ui.menu
 
 import android.net.Uri
 import android.os.Environment
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -20,11 +22,13 @@ import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
@@ -43,6 +47,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tohoku.cafeteria.R
@@ -130,53 +135,76 @@ fun MenuScreen(
             )
         }
 
-        PullToRefreshBox(
-            modifier = Modifier.padding(innerPadding),
-            state = pullRefreshState,
-            isRefreshing = uiState.isRefreshing,
-            onRefresh = { viewModel.refreshMenu() },
-            indicator = {
-                PullToRefreshDefaults.Indicator(
-                    state = pullRefreshState,
-                    isRefreshing = uiState.isRefreshing,
-                    modifier = Modifier.align(Alignment.TopCenter),
-                )
-            }
-        ) {
-            when {
-                uiState.errorMessage != null -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState()),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        ErrorScreen(
-                            message = uiState.errorMessage,
-                            onRetry = { viewModel.refreshMenu() }
-                        )
-                    }
-                }
-                uiState.menuData != null && uiState.menuData.isEmpty() -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState()),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        EmptyScreen(
-                            onRefresh = { viewModel.refreshMenu() },
-                            onUpload = { showPhotoDialog = true }
-                        )
-                    }
-                }
-                else -> {
-                    MenuFoodDisplay(
-                        categoryData = uiState.menuData,
-                        cartViewModel = cartViewModel
+        Box(modifier = Modifier.fillMaxSize()) {
+            PullToRefreshBox(
+                modifier = Modifier.padding(innerPadding),
+                state = pullRefreshState,
+                isRefreshing = uiState.isRefreshing,
+                onRefresh = { viewModel.refreshMenu() },
+                indicator = {
+                    PullToRefreshDefaults.Indicator(
+                        state = pullRefreshState,
+                        isRefreshing = uiState.isRefreshing,
+                        modifier = Modifier.align(Alignment.TopCenter),
                     )
+                }
+            ) {
+                when {
+                    uiState.errorMessage != null -> {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            ErrorScreen(
+                                message = uiState.errorMessage,
+                                onRetry = { viewModel.refreshMenu() }
+                            )
+                        }
+                    }
+
+                    uiState.menuData != null && uiState.menuData.isEmpty() -> {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            EmptyScreen(
+                                onRefresh = { viewModel.refreshMenu() },
+                                onUpload = { showPhotoDialog = true }
+                            )
+                        }
+                    }
+
+                    else -> {
+                        MenuFoodDisplay(
+                            categoryData = uiState.menuData,
+                            cartViewModel = cartViewModel
+                        )
+                    }
+                }
+            }
+
+            // Overlay upload progress indicator if an image is being uploaded
+            if (uiState.isUploading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Surface(
+                        modifier = Modifier.wrapContentSize(),
+                        shape = MaterialTheme.shapes.medium,
+                        shadowElevation = 8.dp, // Adds a shadow
+                        color = MaterialTheme.colorScheme.surface
+                    ) {
+                        Box(modifier = Modifier.padding(dimensionResource(R.dimen.padding_large))) {
+                            CircularProgressIndicator()
+                        }
+                    }
                 }
             }
         }

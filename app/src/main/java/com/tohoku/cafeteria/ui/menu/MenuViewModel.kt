@@ -26,7 +26,8 @@ import java.io.File
 data class MenuUiState(
     val menuData: List<FoodCategory>? = null,
     val isRefreshing: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val isUploading: Boolean = false
 )
 
 class MenuViewModel(
@@ -87,7 +88,7 @@ class MenuViewModel(
 
     // Add this function to MenuViewModel
     fun uploadMenuImage(uri: Uri, method: String = "GoogleOCR") {
-        _uiState.value = _uiState.value.copy(isRefreshing = true)
+        _uiState.value = _uiState.value.copy(isUploading = true)
         viewModelScope.launch {
             try {
                 // Get content resolver from application
@@ -110,9 +111,6 @@ class MenuViewModel(
                 // Upload the image
                 foodRepository.uploadMenuImage(imagePart, methodRequestBody)
 
-                // Refresh menu to show the updated data
-                refreshMenu()
-
                 // Show success message
                 ToastManager.run { showMessage(application.getString(R.string.upload_successful)) }
             } catch (e: Exception) {
@@ -123,8 +121,10 @@ class MenuViewModel(
                     e.message ?: application.getString(R.string.unknown_error_occurred)
                 )
             } finally {
-                _uiState.value = _uiState.value.copy(isRefreshing = false)
+                _uiState.value = _uiState.value.copy(isUploading = false)
             }
+
+            refreshMenu()
         }
     }
 
