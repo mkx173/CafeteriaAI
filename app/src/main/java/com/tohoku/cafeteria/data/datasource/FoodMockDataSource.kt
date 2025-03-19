@@ -1,9 +1,12 @@
 package com.tohoku.cafeteria.data.datasource
 
+import com.tohoku.cafeteria.data.response.DetectResponse
 import com.tohoku.cafeteria.data.response.FoodCategoryResponse
 import com.tohoku.cafeteria.data.response.FoodItemResponse
 import com.tohoku.cafeteria.data.response.FoodVariantResponse
 import com.tohoku.cafeteria.data.response.RecommendationResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 
 class FoodMockDataSource : FoodDataSource {
@@ -103,4 +106,17 @@ class FoodMockDataSource : FoodDataSource {
     }
 
     override suspend fun resetMenu() { }
+
+    override suspend fun detectAndSetCurrentMenu(
+        imageUpload: MultipartBody.Part,
+        method: RequestBody
+    ): Response<DetectResponse> {
+        val sampleResponse = DetectResponse(
+            response = mapOf(
+                "a" to 0.1f,
+                "b" to 0.2f
+            )
+        )
+        return Response.success(sampleResponse)
+    }
 }

@@ -17,6 +17,8 @@ import com.tohoku.cafeteria.ui.settings.ExerciseLevel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import java.util.Calendar
 
@@ -130,6 +132,8 @@ class FoodRepository(
     suspend fun resetMenu() {
         dataSource.resetMenu()
     }
+
+    suspend fun uploadMenuImage(imagePart: MultipartBody.Part, method: RequestBody) = dataSource.detectAndSetCurrentMenu(imagePart, method)
 
     suspend fun getFoodByVariantId(variantId: Int): FoodEntity? {
         return foodDao.getFoodByVariantId(variantId)

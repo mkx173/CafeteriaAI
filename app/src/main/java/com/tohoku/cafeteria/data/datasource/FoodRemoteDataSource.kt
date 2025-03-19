@@ -3,7 +3,10 @@ package com.example.foodnutrition.data.datasource
 import com.tohoku.cafeteria.data.response.FoodCategoryResponse
 import com.tohoku.cafeteria.data.datasource.FoodDataSource
 import com.tohoku.cafeteria.data.datasource.FoodApiService
+import com.tohoku.cafeteria.data.response.DetectResponse
 import com.tohoku.cafeteria.data.response.RecommendationResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 
 class FoodRemoteDataSource(private val service: FoodApiService) : FoodDataSource {
@@ -15,4 +18,8 @@ class FoodRemoteDataSource(private val service: FoodApiService) : FoodDataSource
     override suspend fun resetMenu() {
         service.resetMenu()
     }
+    override suspend fun detectAndSetCurrentMenu(
+        imageUpload: MultipartBody.Part,
+        method: RequestBody
+    ): Response<DetectResponse> = service.detectAndSetCurrentMenu(imageUpload, method)
 }
