@@ -26,7 +26,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -46,7 +45,6 @@ import androidx.navigation.NavHostController
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.ui.cart.CartViewModel
 import com.tohoku.cafeteria.ui.menu.ErrorScreen
-import com.tohoku.cafeteria.util.ToastManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,15 +61,6 @@ fun RecommendationResultScreen(
 
     var onSaveToHistoryClick by remember { mutableStateOf({}) }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-
-    LaunchedEffect(uiState.isErrorNew) {
-        if (uiState.isErrorNew) {
-            uiState.errorMessage?.let { message ->
-                ToastManager.showMessage(message)
-                viewModel.clearNewErrorFlag() // Only show toast once
-            }
-        }
-    }
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

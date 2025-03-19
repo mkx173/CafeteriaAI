@@ -14,6 +14,7 @@ import com.tohoku.cafeteria.data.entity.FoodEntity
 import com.tohoku.cafeteria.data.repository.FoodRepository
 import com.tohoku.cafeteria.data.response.RecommendationResponse
 import com.tohoku.cafeteria.domain.model.CartItem
+import com.tohoku.cafeteria.util.ToastManager
 import kotlinx.coroutines.launch
 
 enum class Rating {
@@ -23,7 +24,6 @@ enum class Rating {
 data class RecommendationUiState(
     val recommendation: RecommendationResponse? = null,
     val isRefreshing: Boolean = false,
-    val isErrorNew: Boolean = false,
     val errorMessage: String? = null,
     val additionalNotes: String? = null,
     val foodRatings: Map<Int, Rating> = emptyMap(),
@@ -53,12 +53,13 @@ class RecommendationViewModel(
                 _uiState.value = _uiState.value.copy(
                     recommendation = response.body(),
                     errorMessage = null,
-                    isErrorNew = false
                 )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     errorMessage = e.message ?: application.getString(R.string.unknown_error_occurred),
-                    isErrorNew = true
+                )
+                ToastManager.showMessage(
+                    e.message ?: application.getString(R.string.unknown_error_occurred),
                 )
             } finally {
                 _uiState.value = _uiState.value.copy(isRefreshing = false)
@@ -82,21 +83,18 @@ class RecommendationViewModel(
                 _uiState.value = _uiState.value.copy(
                     recommendation = response.body(),
                     errorMessage = null,
-                    isErrorNew = false
                 )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     errorMessage = e.message ?: application.getString(R.string.unknown_error_occurred),
-                    isErrorNew = true
+                )
+                ToastManager.showMessage(
+                    e.message ?: application.getString(R.string.unknown_error_occurred),
                 )
             } finally {
                 _uiState.value = _uiState.value.copy(isRefreshing = false)
             }
         }
-    }
-
-    fun clearNewErrorFlag() {
-        _uiState.value = _uiState.value.copy(isErrorNew = false)
     }
 
     suspend fun getFoodByVariantId(variantId: Int): FoodEntity? {

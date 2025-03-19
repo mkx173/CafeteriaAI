@@ -88,4 +88,5 @@
     <string name="error_loading_history">Error loading history</string>
     <string name="item_already_in_cart">Item already in cart</string>
     <string name="single">Single</string>
+    <string name="please_select_at_least_one_item">Please select at least one item</string>
 </resources>

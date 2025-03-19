@@ -12,12 +12,12 @@ import com.tohoku.cafeteria.CafeteriaApplication
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.data.repository.FoodRepository
 import com.tohoku.cafeteria.domain.model.FoodCategory
+import com.tohoku.cafeteria.util.ToastManager
 import kotlinx.coroutines.launch
 
 data class MenuUiState(
     val menuData: List<FoodCategory>? = null,
     val isRefreshing: Boolean = false,
-    val isErrorNew: Boolean = false,
     val errorMessage: String? = null
 )
 
@@ -40,21 +40,18 @@ class MenuViewModel(
                 _uiState.value = _uiState.value.copy(
                     menuData = foodRepository.getMenu(),
                     errorMessage = null,
-                    isErrorNew = false
                 )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     errorMessage = e.message ?: application.getString(R.string.unknown_error_occurred),
-                    isErrorNew = true
+                )
+                ToastManager.showMessage(
+                    e.message ?: application.getString(R.string.unknown_error_occurred)
                 )
             } finally {
                 _uiState.value = _uiState.value.copy(isRefreshing = false)
             }
         }
-    }
-
-    fun clearNewErrorFlag() {
-        _uiState.value = _uiState.value.copy(isErrorNew = false)
     }
 
     companion object {

@@ -116,7 +116,7 @@ fun RecommendationResultDisplay (
         onSaveToHistory = {
             val numSelected = viewModel.saveSelectedFoodsToHistory()
             if (numSelected == 0) {
-                ToastManager.showMessage("Please select at least one item")
+                ToastManager.showMessage(context.getString(R.string.please_select_at_least_one_item))
                 false
             } else {
                 ToastManager.showMessage(context.getString(

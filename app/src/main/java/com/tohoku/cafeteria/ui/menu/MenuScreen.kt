@@ -21,7 +21,6 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -32,7 +31,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.ui.cart.CartViewModel
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
-import com.tohoku.cafeteria.util.ToastManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,15 +42,6 @@ fun MenuScreen(
     val uiState = viewModel.uiState.value
     val pullRefreshState = rememberPullToRefreshState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-
-    LaunchedEffect(uiState.isErrorNew) {
-        if (uiState.isErrorNew) {
-            uiState.errorMessage?.let { message ->
-                ToastManager.showMessage(message)
-                viewModel.clearNewErrorFlag() // Only show toast once
-            }
-        }
-    }
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
