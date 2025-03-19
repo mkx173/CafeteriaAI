@@ -90,6 +90,14 @@ class RecommendationViewModel(
         _uiState.value = _uiState.value.copy(foodSelected = currentSelected.toMap())
     }
 
+    fun saveSelectedFoodsToHistory(): Int {
+        val selectedVariantIds = uiState.value.foodSelected.filter { it.value }.keys.toList()
+        viewModelScope.launch {
+            foodRepository.saveFoodToHistory(selectedVariantIds)
+        }
+        return selectedVariantIds.size
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

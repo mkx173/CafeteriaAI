@@ -80,4 +80,6 @@
     <string name="thumbs_down">Thumbs down</string>
     <string name="item_not_found">Item not found</string>
     <string name="ok">OK</string>
+    <string name="item_saved_to_history">%1$d item saved to history</string>
+    <string name="items_saved_to_history">%1$d items saved to history</string>
 </resources>

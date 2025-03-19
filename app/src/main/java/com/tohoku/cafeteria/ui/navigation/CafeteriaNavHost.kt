@@ -170,10 +170,11 @@ fun CafeteriaNavHost(
                     RecommendationResultScreen(
                         modifier = Modifier.padding(innerPadding),
                         viewModel = recommendationViewModel,
+                        cartViewModel = cartViewModel,
+                        navController = navController,
                         onBackClick = {
                             navController.popBackStack()
                         },
-                        cartViewModel = cartViewModel
                     )
                 }
             }

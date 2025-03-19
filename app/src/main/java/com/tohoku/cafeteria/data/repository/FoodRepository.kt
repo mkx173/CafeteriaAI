@@ -1,8 +1,10 @@
 package com.tohoku.cafeteria.data.repository
 
 import com.tohoku.cafeteria.data.dao.FoodDao
+import com.tohoku.cafeteria.data.dao.FoodHistoryDao
 import com.tohoku.cafeteria.data.datasource.FoodDataSource
 import com.tohoku.cafeteria.data.entity.FoodEntity
+import com.tohoku.cafeteria.data.entity.FoodHistoryEntity
 import com.tohoku.cafeteria.data.request.RecommendationQuery
 import com.tohoku.cafeteria.data.request.RecommendationRequest
 import com.tohoku.cafeteria.data.response.RecommendationResponse
@@ -13,11 +15,29 @@ import com.tohoku.cafeteria.ui.settings.BmrCalculationOption
 import com.tohoku.cafeteria.ui.settings.ExerciseLevel
 import kotlinx.serialization.json.Json
 import retrofit2.Response
+import java.util.Calendar
+
+enum class MealOption(val key: String) {
+    BREAKFAST("Breakfast"),
+    LUNCH("Lunch"),
+    DINNER("Dinner");
+
+    companion object {
+        fun fromHour(hour: Int): MealOption {
+            return when (hour) {
+                in 0 until 11 -> BREAKFAST
+                in 11 until 17 -> LUNCH
+                else -> DINNER
+            }
+        }
+    }
+}
 
 class FoodRepository(
     private val dataSource: FoodDataSource,
     private val settingsRepository: SettingsRepository,
-    private val foodDao: FoodDao
+    private val foodDao: FoodDao,
+    private val foodHistoryDao: FoodHistoryDao
 ) {
     suspend fun getMenu(): List<FoodCategory> {
         val responses = dataSource.getMenu()
@@ -50,6 +70,24 @@ class FoodRepository(
             }
         }
         foodDao.insertFoods(foodEntities)
+    }
+
+    suspend fun saveFoodToHistory(variantIds: List<Int>) {
+        if (variantIds.isEmpty()) return
+
+        val currentTimeMillis = System.currentTimeMillis()
+        val calendar = Calendar.getInstance().apply { timeInMillis = currentTimeMillis }
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val mealOption = MealOption.fromHour(hour)
+
+        variantIds.forEach { variantId ->
+            val historyEntity = FoodHistoryEntity(
+                timestamp = currentTimeMillis,
+                variantId = variantId,
+                mealOption = mealOption.key
+            )
+            foodHistoryDao.insertFoodHistory(historyEntity)
+        }
     }
 
     // Build the recommendation request using current settings and then call the API.

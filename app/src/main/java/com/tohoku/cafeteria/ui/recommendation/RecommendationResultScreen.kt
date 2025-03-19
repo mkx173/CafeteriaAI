@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.ui.cart.CartViewModel
 import com.tohoku.cafeteria.ui.menu.ErrorScreen
@@ -53,6 +54,7 @@ fun RecommendationResultScreen(
     modifier: Modifier = Modifier,
     viewModel: RecommendationViewModel = viewModel(factory = RecommendationViewModel.Factory),
     cartViewModel: CartViewModel,
+    navController: NavHostController? = null,
     onBackClick: () -> Unit
 ) {
     val uiState = viewModel.uiState.value
@@ -177,6 +179,8 @@ fun RecommendationResultScreen(
                     val rec = uiState.recommendation
                     RecommendationResultDisplay(
                         viewModel = viewModel,
+                        cartViewModel = cartViewModel,
+                        navController = navController,
                         recommendationResponse = rec,
                         getFoodByVariantId =  viewModel::getFoodByVariantId,
                         onTotalPriceCalculated = { price ->
@@ -184,7 +188,7 @@ fun RecommendationResultScreen(
                         },
                         setSaveToHistoryClick = { action ->
                             onSaveToHistoryClick = action
-                        },
+                        }
                     )
                 }
                 uiState.errorMessage != null -> {

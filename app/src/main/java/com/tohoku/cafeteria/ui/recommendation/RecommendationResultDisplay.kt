@@ -40,18 +40,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.data.entity.FoodEntity
 import com.tohoku.cafeteria.data.response.RecommendationResponse
+import com.tohoku.cafeteria.ui.cart.CartViewModel
 import com.tohoku.cafeteria.ui.components.FoodSelectorBottomSheetComponent
 import com.tohoku.cafeteria.ui.components.RecommendationResultFoodBottomSheetComponent
+import com.tohoku.cafeteria.ui.navigation.Screen
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
+import com.tohoku.cafeteria.util.ToastManager
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,6 +64,8 @@ import kotlinx.coroutines.launch
 fun RecommendationResultDisplay (
     modifier: Modifier = Modifier,
     viewModel: RecommendationViewModel = viewModel(factory = RecommendationViewModel.Factory),
+    cartViewModel: CartViewModel = viewModel(),
+    navController: NavHostController? = null,
     recommendationResponse: RecommendationResponse,
     getFoodByVariantId: suspend (Int) -> FoodEntity?,
     onTotalPriceCalculated: (Int) -> Unit,
@@ -66,6 +73,7 @@ fun RecommendationResultDisplay (
 ) {
     val uiState = viewModel.uiState.value
     val recommendedFoods = remember { mutableStateListOf<FoodEntity?>() }
+    val context = LocalContext.current
 
     val scope = rememberCoroutineScope()
     var selectedItem by remember { mutableStateOf<FoodEntity?>(null) }
@@ -105,7 +113,23 @@ fun RecommendationResultDisplay (
                 showBottomSheet = false
             }
         },
-        onSaveToHistory = { }
+        onSaveToHistory = {
+            val numSelected = viewModel.saveSelectedFoodsToHistory()
+            ToastManager.showMessage(context.getString(
+                if (numSelected == 1) R.string.item_saved_to_history else R.string.items_saved_to_history,
+                numSelected
+            ))
+            cartViewModel.clearCart()
+            navController?.navigate(Screen.History.route) {
+                popUpTo(navController.graph.startDestinationId) { saveState = false }
+                launchSingleTop = true
+                restoreState = false
+            }
+            scope.launch {
+                addToHistorySheetState.hide()
+                showBottomSheet = false
+            }
+        }
     )
 
     LaunchedEffect(recommendationResponse.recommendedMeals) {

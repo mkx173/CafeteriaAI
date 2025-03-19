@@ -42,12 +42,23 @@ class DefaultAppContainer(context: Context) : BaseAppContainer(context) {
     }
 
     override val foodRepository: FoodRepository by lazy {
-        FoodRepository(FoodRemoteDataSource(retrofitService), settingsRepository, database.foodDao())
+        FoodRepository(
+            FoodRemoteDataSource(retrofitService),
+            settingsRepository,
+            database.foodDao(),
+            database.foodHistoryDao()
+        )
     }
 }
 
 class MockAppContainer(context: Context) : BaseAppContainer(context) {
     override val foodRepository: FoodRepository by lazy {
-        FoodRepository(FoodMockDataSource(), settingsRepository, database.foodDao())
+        FoodRepository(
+            FoodMockDataSource(),
+            settingsRepository,
+            database.foodDao(),
+            database.foodHistoryDao()
+
+        )
     }
 }
