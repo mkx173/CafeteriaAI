@@ -53,6 +53,30 @@ class MenuViewModel(
         }
     }
 
+    fun resetMenu() {
+        // Show progress indicator
+        _uiState.value = _uiState.value.copy(isRefreshing = true)
+        viewModelScope.launch {
+            try {
+                // Call the reset menu API from the repository
+                foodRepository.resetMenu()
+                // Optionally, refresh the menu to reflect the changes
+                refreshMenu()
+            } catch (e: Exception) {
+                // Update error state and show an error message if needed
+                _uiState.value = _uiState.value.copy(
+                    errorMessage = e.message ?: application.getString(R.string.unknown_error_occurred)
+                )
+                ToastManager.showMessage(
+                    e.message ?: application.getString(R.string.unknown_error_occurred)
+                )
+            } finally {
+                // Hide the progress indicator
+                _uiState.value = _uiState.value.copy(isRefreshing = false)
+            }
+        }
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

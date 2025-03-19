@@ -101,4 +101,6 @@ class FoodMockDataSource : FoodDataSource {
         )
         return Response.success(sampleResponse)
     }
+
+    override suspend fun resetMenu() { }
 }

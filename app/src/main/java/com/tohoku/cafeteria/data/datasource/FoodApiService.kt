@@ -24,4 +24,7 @@ interface FoodApiService {
         @Field("query") query: String,
         @Field("rating") rating: String,
     ): Response<RecommendationResponse>
+
+    @GET("api/reset_current_menu/")
+    suspend fun resetMenu()
 }

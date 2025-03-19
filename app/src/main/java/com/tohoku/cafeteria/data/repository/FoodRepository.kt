@@ -127,6 +127,10 @@ class FoodRepository(
         )
     }
 
+    suspend fun resetMenu() {
+        dataSource.resetMenu()
+    }
+
     suspend fun getFoodByVariantId(variantId: Int): FoodEntity? {
         return foodDao.getFoodByVariantId(variantId)
     }

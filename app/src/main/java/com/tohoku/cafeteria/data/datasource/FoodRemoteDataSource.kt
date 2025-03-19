@@ -12,4 +12,7 @@ class FoodRemoteDataSource(private val service: FoodApiService) : FoodDataSource
         service.requestRecommendation(query)
     override suspend fun requestNewRecommendation(query: String, rating: String): Response<RecommendationResponse> =
         service.requestNewRecommendation(query, rating)
+    override suspend fun resetMenu() {
+        service.resetMenu()
+    }
 }
