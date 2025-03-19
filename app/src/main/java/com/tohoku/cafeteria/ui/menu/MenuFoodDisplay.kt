@@ -74,7 +74,8 @@ fun MenuFoodDisplay(
         onAddToCart = { menuItem, variant ->
             cartViewModel.addToCart(
                 CartItem(item = variant, url = menuItem.url, name = menuItem.name),
-                context.getString(R.string.added_to_cart)
+                context.getString(R.string.added_to_cart),
+                context.getString(R.string.item_already_in_cart)
             )
             scope.launch { sheetState.hide() }
         }

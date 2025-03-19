@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -44,8 +45,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -54,6 +57,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.domain.model.CartItem
 import com.tohoku.cafeteria.domain.model.FoodVariant
@@ -194,9 +198,6 @@ fun RecommendationScreen(
                     CartItemRow(
                         item = item,
                         onClick = handleItemClick,
-                        onQuantityChanged = { newQuantity ->
-                            cartViewModel.updateQuantity(item.item.variantId, newQuantity)
-                        },
                         onRemoveClick = {
                             cartViewModel.removeFromCart(item.item.variantId)
                         }
@@ -215,7 +216,6 @@ fun CartItemRow(
     modifier: Modifier = Modifier,
     item: CartItem,
     onClick: (CartItem) -> Unit,
-    onQuantityChanged: (Int) -> Unit,
     onRemoveClick: () -> Unit
 ) {
     // Local state for confirmation dialog
@@ -237,14 +237,27 @@ fun CartItemRow(
             .fillMaxWidth()
             .padding(vertical = dimensionResource(R.dimen.padding_xsmall))
             .clickable { onClick(item) },
-        shape = MaterialTheme.shapes.small,
+        shape = MaterialTheme.shapes.medium,
         tonalElevation = 1.dp
     ) {
         ListItem(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = dimensionResource(R.dimen.padding_small)),
             headlineContent = {
                 Text(
                     text = stringResource(R.string.name_variant_name, item.name, item.item.variantName),
                     style = MaterialTheme.typography.bodyLarge
+                )
+            },
+            leadingContent = {
+                AsyncImage(
+                    modifier = Modifier
+                        .size(dimensionResource(R.dimen.size_food_item_image))
+                        .clip(CircleShape),
+                    model = item.url,
+                    contentDescription = item.name,
+                    contentScale = ContentScale.Crop
                 )
             },
             supportingContent = {
@@ -267,42 +280,12 @@ fun CartItemRow(
 
             },
             trailingContent = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(
-                        onClick = {
-                            if (item.quantity - 1 <= 0) {
-                                showConfirmation(context.getString(R.string.confirm_remove_cart, item.name)) {
-                                    onQuantityChanged(0)
-                                }
-                            } else {
-                                onQuantityChanged(item.quantity - 1)
-                            }
-                        }
-                    ) {
-                        Icon(Icons.Default.Remove, contentDescription = stringResource(R.string.decrease))
+                IconButton(onClick = {
+                    showConfirmation(context.getString(R.string.confirm_remove_cart, item.name, item.item.variantName)) {
+                        onRemoveClick()
                     }
-
-                    Text(
-                        text = "${item.quantity}",
-                        modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small)),
-                        style = MaterialTheme.typography.labelLarge
-                    )
-
-                    IconButton(
-                        onClick = { onQuantityChanged(item.quantity + 1) }
-                    ) {
-                        Icon(Icons.Default.Add, contentDescription = stringResource(R.string.increase))
-                    }
-
-                    IconButton(onClick = {
-                        showConfirmation(context.getString(R.string.confirm_remove_cart, item.name)) {
-                            onRemoveClick()
-                        }
-                    }) {
-                        Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.remove))
-                    }
+                }) {
+                    Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.remove))
                 }
             }
         )
@@ -350,7 +333,6 @@ fun CartItemRowPreview() {
                 url = "https://media.istockphoto.com/id/520410807/photo/cheeseburger.jpg?s=612x612&w=0&k=20&c=fG_OrCzR5HkJGI8RXBk76NwxxTasMb1qpTVlEM0oyg4="
             ),
             onClick = { },
-            onQuantityChanged = { },
             onRemoveClick = { }
         )
     }
@@ -374,7 +356,8 @@ fun RecommendationScreenPreview() {
             name = "Sample Burger",
             url = "https://media.istockphoto.com/id/520410807/photo/cheeseburger.jpg?s=612x612&w=0&k=20&c=fG_OrCzR5HkJGI8RXBk76NwxxTasMb1qpTVlEM0oyg4="
         ),
-        message = stringResource(R.string.added_to_cart)
+        message = stringResource(R.string.added_to_cart),
+        alreadyInCartMessage = stringResource(R.string.item_already_in_cart)
     )
     cartViewModel.addToCart(
         CartItem(
@@ -390,7 +373,8 @@ fun RecommendationScreenPreview() {
             name = "Sample Burger",
             url = "https://media.istockphoto.com/id/520410807/photo/cheeseburger.jpg?s=612x612&w=0&k=20&c=fG_OrCzR5HkJGI8RXBk76NwxxTasMb1qpTVlEM0oyg4="
         ),
-        message = stringResource(R.string.added_to_cart)
+        message = stringResource(R.string.added_to_cart),
+        alreadyInCartMessage = stringResource(R.string.item_already_in_cart)
     )
     CafeteriaAITheme {
         RecommendationScreen(

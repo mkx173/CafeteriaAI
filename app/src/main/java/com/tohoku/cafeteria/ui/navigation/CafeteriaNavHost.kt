@@ -86,7 +86,7 @@ fun CafeteriaNavHost(
 
     // Collect cart data
     val cartItems by cartViewModel.cartItems.collectAsState()
-    val cartItemCount = cartItems.sumOf { it.quantity }
+    val cartItemCount = cartItems.size
 
     Scaffold(
         modifier = modifier,

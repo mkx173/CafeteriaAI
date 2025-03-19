@@ -224,7 +224,12 @@ fun FoodHistoryItem(historyItem: FoodHistoryWithDetails, handleItemClick: (FoodE
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = dimensionResource(R.dimen.padding_small)),
-                headlineContent = { Text(text = stringResource(R.string.name_variant_name, food.foodName, food.variantName)) },
+                headlineContent = {
+                    Text(
+                        text = stringResource(R.string.name_variant_name, food.foodName, food.variantName),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                },
                 supportingContent = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
