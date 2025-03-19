@@ -12,6 +12,8 @@ import com.tohoku.cafeteria.domain.model.CartItem
 import com.tohoku.cafeteria.domain.model.FoodCategory
 import com.tohoku.cafeteria.ui.settings.BmrCalculationOption
 import com.tohoku.cafeteria.ui.settings.ExerciseLevel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import retrofit2.Response
 import java.util.Calendar
@@ -31,6 +33,11 @@ enum class MealOption(val key: String) {
         }
     }
 }
+
+data class FoodHistoryWithDetails(
+    val historyEntity: FoodHistoryEntity,
+    val foodEntity: FoodEntity?
+)
 
 class FoodRepository(
     private val dataSource: FoodDataSource,
@@ -103,6 +110,18 @@ class FoodRepository(
 
     suspend fun getFoodByVariantId(variantId: Int): FoodEntity? {
         return foodDao.getFoodByVariantId(variantId)
+    }
+
+    fun getFoodHistoryWithDetails(): Flow<List<FoodHistoryWithDetails>> {
+        return foodHistoryDao.getFoodHistory().map { historyEntities ->
+            historyEntities.map { historyEntity ->
+                val food = foodDao.getFoodByVariantId(historyEntity.variantId)
+                FoodHistoryWithDetails(
+                    historyEntity = historyEntity,
+                    foodEntity = food
+                )
+            }
+        }
     }
 
     private fun buildRecommendationQuery(settings: SettingsState, cartItems: List<CartItem>, additionalNotes: String): RecommendationQuery {

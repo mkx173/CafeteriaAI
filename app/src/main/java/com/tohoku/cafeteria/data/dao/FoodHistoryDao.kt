@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.tohoku.cafeteria.data.entity.FoodHistoryEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FoodHistoryDao {
@@ -12,5 +13,5 @@ interface FoodHistoryDao {
     suspend fun insertFoodHistory(history: FoodHistoryEntity)
 
     @Query("SELECT * FROM food_history ORDER BY timestamp DESC")
-    suspend fun getFoodHistory(): List<FoodHistoryEntity>
+    fun getFoodHistory(): Flow<List<FoodHistoryEntity>>
 }
