@@ -38,7 +38,7 @@ fun FoodSelectorBottomSheetComponent(
     recommendedFoods: List<FoodEntity?>,
     viewModel: RecommendationViewModel,
     onDismiss: () -> Unit,
-    onSaveToHistory: () -> Unit
+    onSaveToHistory: () -> Boolean
 ) {
     if (showBottomSheet) {
         ModalBottomSheet(
@@ -112,8 +112,7 @@ fun FoodSelectorBottomSheetComponent(
                 ) {
                     Button(
                         onClick = {
-                            onSaveToHistory()
-                            onDismiss()
+                            if (onSaveToHistory()) onDismiss()
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {

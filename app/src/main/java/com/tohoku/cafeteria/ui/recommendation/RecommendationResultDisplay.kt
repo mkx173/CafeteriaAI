@@ -115,19 +115,25 @@ fun RecommendationResultDisplay (
         },
         onSaveToHistory = {
             val numSelected = viewModel.saveSelectedFoodsToHistory()
-            ToastManager.showMessage(context.getString(
-                if (numSelected == 1) R.string.item_saved_to_history else R.string.items_saved_to_history,
-                numSelected
-            ))
-            cartViewModel.clearCart()
-            navController?.navigate(Screen.History.route) {
-                popUpTo(navController.graph.startDestinationId) { saveState = false }
-                launchSingleTop = true
-                restoreState = false
-            }
-            scope.launch {
-                addToHistorySheetState.hide()
-                showBottomSheet = false
+            if (numSelected == 0) {
+                ToastManager.showMessage("Please select at least one item")
+                false
+            } else {
+                ToastManager.showMessage(context.getString(
+                    if (numSelected == 1) R.string.item_saved_to_history else R.string.items_saved_to_history,
+                    numSelected
+                ))
+                cartViewModel.clearCart()
+                navController?.navigate(Screen.History.route) {
+                    popUpTo(navController.graph.startDestinationId) { saveState = false }
+                    launchSingleTop = true
+                    restoreState = false
+                }
+                scope.launch {
+                    addToHistorySheetState.hide()
+                    showBottomSheet = false
+                }
+                true
             }
         }
     )
