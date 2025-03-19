@@ -33,7 +33,6 @@ class MenuViewModel(
     }
 
     fun refreshMenu()  {
-        // Clear any previous error and set refreshing state.
         _uiState.value = _uiState.value.copy(isRefreshing = true)
         viewModelScope.launch {
             try {

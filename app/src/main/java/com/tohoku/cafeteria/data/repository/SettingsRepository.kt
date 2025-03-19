@@ -62,7 +62,7 @@ class SettingsRepository(private val context: Context) {
     // MutableStateFlow to hold the current settings
     private val _settingsState = MutableStateFlow<SettingsState?>(null)
 
-    // Retrieve the unified settings state as a Flow.
+    // Retrieve the unified settings state as a Flow
     val settingsState: StateFlow<SettingsState> = _settingsState
         .filterNotNull()
         .stateIn(

@@ -28,7 +28,6 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "cafeteria_database"
                 )
-                    // For development purposes; in production, you should implement proper migrations.
                     .fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance

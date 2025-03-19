@@ -116,9 +116,11 @@ class FoodRepository(
 
         // Build a RecommendationQuery from your SettingsState and additional notes.
         val queryData = buildRecommendationQuery(currentSettings, cartItems, additionalNotes)
+
+        // Build a list of RatingQuery objects from the ratings map.
         val ratingData = ratingsMap.map { (variantId, rating) -> buildRatingQuery(variantId, rating) }
 
-        // Call the recommendation endpoint.
+        // Call the request new recommendation endpoint.
         return dataSource.requestNewRecommendation(
             Json.encodeToString(queryData),
             Json.encodeToString(ratingData)

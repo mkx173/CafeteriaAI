@@ -358,7 +358,7 @@ fun CustomBmrInputDialog(
                     .focusRequester(bmrFocus)
                     .onFocusChanged {
                         if (it.isFocused) {
-                            // Use LaunchedEffect to delay the selection until after composition
+                            // Delay the selection until after composition
                             coroutineScope.launch {
                                 delay(10) // Small delay to ensure the TextField is ready
                                 bmrInput =
@@ -469,7 +469,7 @@ fun PersonalInfoBmrDialog(
                         .focusRequester(ageFocus)
                         .onFocusChanged {
                             if (it.isFocused) {
-                                // Use LaunchedEffect to delay the selection until after composition
+                                // Delay the selection until after composition
                                 coroutineScope.launch {
                                     delay(10) // Small delay to ensure the TextField is ready
                                     age = age.copy(selection = TextRange(0, age.text.length))
@@ -518,7 +518,7 @@ fun PersonalInfoBmrDialog(
                         .focusRequester(weightFocus)
                         .onFocusChanged {
                             if (it.isFocused) {
-                                // Use LaunchedEffect to delay the selection until after composition
+                                // Delay the selection until after composition
                                 coroutineScope.launch {
                                     delay(10) // Small delay to ensure the TextField is ready
                                     weight =
@@ -568,7 +568,7 @@ fun PersonalInfoBmrDialog(
                         .focusRequester(heightFocus)
                         .onFocusChanged {
                             if (it.isFocused) {
-                                // Use LaunchedEffect to delay the selection until after composition
+                                // Delay the selection until after composition
                                 coroutineScope.launch {
                                     delay(10) // Small delay to ensure the TextField is ready
                                     height =

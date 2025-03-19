@@ -13,7 +13,6 @@ import androidx.compose.material.icons.filled.Reviews
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -47,10 +46,10 @@ import com.tohoku.cafeteria.ui.settings.SettingsScreen
 
 // Define the screens as sealed objects
 sealed class Screen(val route: String, @StringRes val label: Int) {
-    object Menu : Screen("menu", R.string.tab_menu)
-    object Recommendation : Screen("recommendation", R.string.tab_recommendation)
-    object History : Screen("history", R.string.tab_history)
-    object Settings : Screen("settings", R.string.tab_settings)
+    data object Menu : Screen("menu", R.string.tab_menu)
+    data object Recommendation : Screen("recommendation", R.string.tab_recommendation)
+    data object History : Screen("history", R.string.tab_history)
+    data object Settings : Screen("settings", R.string.tab_settings)
 }
 
 private data class NavigationItemContent(
@@ -66,7 +65,6 @@ private val bottomNavItems = listOf(
     NavigationItemContent(Screen.Settings, Icons.Default.Settings)
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CafeteriaNavHost(
     navController: NavHostController,

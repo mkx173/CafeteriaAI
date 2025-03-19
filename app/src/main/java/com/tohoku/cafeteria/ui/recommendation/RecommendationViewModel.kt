@@ -39,7 +39,6 @@ class RecommendationViewModel(
     val uiState: State<RecommendationUiState> = _uiState
 
     fun fetchRecommendation(cartItems: List<CartItem>) {
-        // Clear any previous error and set refreshing state.
         _uiState.value = _uiState.value.copy(isRefreshing = true)
         viewModelScope.launch {
             try {
@@ -68,7 +67,6 @@ class RecommendationViewModel(
     }
 
     fun fetchNewRecommendation(cartItems: List<CartItem>) {
-        // Clear any previous error and set refreshing state.
         _uiState.value = _uiState.value.copy(isRefreshing = true)
         viewModelScope.launch {
             try {

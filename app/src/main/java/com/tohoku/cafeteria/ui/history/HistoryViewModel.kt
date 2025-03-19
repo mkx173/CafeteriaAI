@@ -19,7 +19,7 @@ import java.util.Calendar
 import java.util.Locale
 
 sealed class HistoryState {
-    object Loading : HistoryState()
+    data object Loading : HistoryState()
     data class Success(val data: List<DateGroup>) : HistoryState()
     data class Error(val message: String) : HistoryState()
 }

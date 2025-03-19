@@ -35,9 +35,9 @@ class DefaultAppContainer(context: Context) : BaseAppContainer(context) {
         "http://34.229.85.230:8000/"
 
     private val okHttpClient = OkHttpClient.Builder()
-        .connectTimeout(60, TimeUnit.SECONDS) // Increase connection timeout if needed
-        .readTimeout(60, TimeUnit.SECONDS)    // Increase read timeout to wait longer for responses
-        .writeTimeout(60, TimeUnit.SECONDS)   // Increase write timeout if your request body is large
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
         .build()
 
     private val retrofit: Retrofit = Retrofit.Builder()
