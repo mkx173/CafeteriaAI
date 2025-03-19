@@ -59,7 +59,7 @@ import com.tohoku.cafeteria.domain.model.CartItem
 import com.tohoku.cafeteria.domain.model.FoodVariant
 import com.tohoku.cafeteria.ui.cart.CartViewModel
 import com.tohoku.cafeteria.ui.cart.rememberCartViewModel
-import com.tohoku.cafeteria.ui.components.CartFoodBottomSheetComponent
+import com.tohoku.cafeteria.ui.components.CartItemBottomSheetComponent
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
 import kotlinx.coroutines.launch
 
@@ -88,7 +88,7 @@ fun RecommendationScreen(
         scope.launch { sheetState.show() }
     }
 
-    CartFoodBottomSheetComponent(
+    CartItemBottomSheetComponent(
         sheetState = sheetState,
         selectedItem = selectedItem,
         onDismiss = {

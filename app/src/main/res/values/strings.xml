@@ -82,4 +82,6 @@
     <string name="ok">OK</string>
     <string name="item_saved_to_history">%1$d item saved to history</string>
     <string name="items_saved_to_history">%1$d items saved to history</string>
+    <string name="no_history_found">No history found</string>
+    <string name="error_loading_history">Error loading history</string>
 </resources>

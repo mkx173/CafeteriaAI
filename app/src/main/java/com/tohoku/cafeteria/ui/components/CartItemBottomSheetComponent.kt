@@ -21,13 +21,13 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import com.tohoku.cafeteria.R
-import com.tohoku.cafeteria.data.entity.FoodEntity
+import com.tohoku.cafeteria.domain.model.CartItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RecommendationResultFoodBottomSheetComponent(
+fun CartItemBottomSheetComponent(
     modifier: Modifier = Modifier,
-    selectedItem: FoodEntity? = null,
+    selectedItem: CartItem? = null,
     sheetState: SheetState,
     onDismiss: () -> Unit
 ) {
@@ -48,14 +48,14 @@ fun RecommendationResultFoodBottomSheetComponent(
                         .fillMaxWidth()
                         .aspectRatio(16f / 9f)
                         .clip(MaterialTheme.shapes.large),
-                    model = selectedItem.imageUrl,
-                    contentDescription = selectedItem.foodName,
+                    model = selectedItem.url,
+                    contentDescription = selectedItem.name,
                     contentScale = ContentScale.Crop
                 )
 
                 // Food name
                 Text(
-                    text = stringResource(R.string.name_variant_name, selectedItem.foodName, selectedItem.variantName),
+                    text = stringResource(R.string.name_variant_name, selectedItem.name, selectedItem.item.variantName),
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(vertical = dimensionResource(R.dimen.padding_medium))
                 )
@@ -73,21 +73,16 @@ fun RecommendationResultFoodBottomSheetComponent(
                         modifier = Modifier.padding(vertical = dimensionResource(R.dimen.padding_xsmall))
                     )
 
-                    NutritionDetailRow(label = stringResource(R.string.calories), value = stringResource(
-                        R.string.kcal, cartItem.calories)
-                    )
+                    NutritionDetailRow(label = stringResource(R.string.calories), value = stringResource(R.string.kcal, cartItem.item.calories))
                     NutritionDetailRow(label = stringResource(R.string.protein), value = stringResource(
-                        R.string.gram, cartItem.protein
-                    )
-                    )
+                        R.string.gram, cartItem.item.protein
+                    ))
                     NutritionDetailRow(label = stringResource(R.string.fat), value = stringResource(
-                        R.string.gram, cartItem.fat
-                    )
-                    )
+                        R.string.gram, cartItem.item.fat
+                    ))
                     NutritionDetailRow(label = stringResource(R.string.carbohydrates), value = stringResource(
-                        R.string.gram, cartItem.carbohydrates
-                    )
-                    )
+                        R.string.gram, cartItem.item.carbohydrates
+                    ))
                 }
             }
 

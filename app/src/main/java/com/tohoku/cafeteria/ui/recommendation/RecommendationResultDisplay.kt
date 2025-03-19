@@ -52,8 +52,8 @@ import com.tohoku.cafeteria.R
 import com.tohoku.cafeteria.data.entity.FoodEntity
 import com.tohoku.cafeteria.data.response.RecommendationResponse
 import com.tohoku.cafeteria.ui.cart.CartViewModel
+import com.tohoku.cafeteria.ui.components.FoodEntityBottomSheetComponent
 import com.tohoku.cafeteria.ui.components.FoodSelectorBottomSheetComponent
-import com.tohoku.cafeteria.ui.components.RecommendationResultFoodBottomSheetComponent
 import com.tohoku.cafeteria.ui.navigation.Screen
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
 import com.tohoku.cafeteria.util.ToastManager
@@ -86,7 +86,7 @@ fun RecommendationResultDisplay (
         scope.launch { foodDetailSheetState.show() }
     }
 
-    RecommendationResultFoodBottomSheetComponent(
+    FoodEntityBottomSheetComponent(
         sheetState = foodDetailSheetState,
         selectedItem = selectedItem,
         onDismiss = {
