@@ -90,78 +90,79 @@ fun RecommendationResultScreen(
             )
         },
         bottomBar = {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(
-                    topStart = dimensionResource(R.dimen.round_corner_radius_medium),
-                    topEnd = dimensionResource(R.dimen.round_corner_radius_medium),
-                    bottomStart = 0.dp,
-                    bottomEnd = 0.dp
-                ),
-                color = MaterialTheme.colorScheme.surfaceContainerLow,
-                tonalElevation = 1.dp
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = dimensionResource(R.dimen.padding_medium))
+            if (!uiState.isRefreshing && uiState.errorMessage == null) {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(
+                        topStart = dimensionResource(R.dimen.round_corner_radius_medium),
+                        topEnd = dimensionResource(R.dimen.round_corner_radius_medium),
+                        bottomStart = 0.dp,
+                        bottomEnd = 0.dp
+                    ),
+                    color = MaterialTheme.colorScheme.surfaceContainerLow,
+                    tonalElevation = 1.dp
                 ) {
-                    OutlinedTextField(
-                        value = additionalNotes,
-                        onValueChange = { newText -> additionalNotes = newText },
-                        label = { Text(stringResource(R.string.additional_instructions)) },
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = dimensionResource(R.dimen.padding_medium))
-                            .padding(bottom = dimensionResource(R.dimen.padding_xsmall)),
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Done
-                        ),
-                    )
-
-                    ListItem(
-                        colors = ListItemDefaults.colors(
-                            containerColor = Color.Transparent
-                        ),
-                        headlineContent = {
-                            Text(
-                                text = stringResource(R.string.total),
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        },
-                        trailingContent = {
-                            Text(
-                                text = stringResource(R.string.price, totalPrice),
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                            .padding(vertical = dimensionResource(R.dimen.padding_medium))
                     ) {
-                        Button(
-                            onClick = { },
+                        OutlinedTextField(
+                            value = additionalNotes,
+                            onValueChange = { newText -> additionalNotes = newText },
+                            label = { Text(stringResource(R.string.additional_instructions)) },
                             modifier = Modifier
-                                .weight(1f)
+                                .fillMaxWidth()
                                 .padding(horizontal = dimensionResource(R.dimen.padding_medium))
-                        ) {
-                            Text(stringResource(R.string.get_new_recommendation))
-                        }
+                                .padding(bottom = dimensionResource(R.dimen.padding_xsmall)),
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Done
+                            ),
+                        )
 
-                        Button(
-                            onClick = onSaveToHistoryClick,
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(horizontal = dimensionResource(R.dimen.padding_medium))
+                        ListItem(
+                            colors = ListItemDefaults.colors(
+                                containerColor = Color.Transparent
+                            ),
+                            headlineContent = {
+                                Text(
+                                    text = stringResource(R.string.total),
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                            },
+                            trailingContent = {
+                                Text(
+                                    text = stringResource(R.string.price, totalPrice),
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(stringResource(R.string.save_to_history))
+                            Button(
+                                onClick = { },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(horizontal = dimensionResource(R.dimen.padding_medium))
+                            ) {
+                                Text(stringResource(R.string.get_new_recommendation))
+                            }
+
+                            Button(
+                                onClick = onSaveToHistoryClick,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(horizontal = dimensionResource(R.dimen.padding_medium))
+                            ) {
+                                Text(stringResource(R.string.save_to_history))
+                            }
                         }
                     }
-
                 }
             }
         }

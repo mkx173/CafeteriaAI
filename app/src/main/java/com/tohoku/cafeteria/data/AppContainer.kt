@@ -10,7 +10,9 @@ import com.tohoku.cafeteria.data.repository.FoodRepository
 import com.tohoku.cafeteria.data.repository.SettingsRepository
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import java.util.concurrent.TimeUnit
 
 interface AppContainer {
     val foodRepository: FoodRepository
@@ -32,9 +34,16 @@ class DefaultAppContainer(context: Context) : BaseAppContainer(context) {
     private val BASE_URL =
         "http://34.229.85.230:8000/"
 
+    private val okHttpClient = OkHttpClient.Builder()
+        .connectTimeout(60, TimeUnit.SECONDS) // Increase connection timeout if needed
+        .readTimeout(60, TimeUnit.SECONDS)    // Increase read timeout to wait longer for responses
+        .writeTimeout(60, TimeUnit.SECONDS)   // Increase write timeout if your request body is large
+        .build()
+
     private val retrofit: Retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
         .baseUrl(BASE_URL)
+        .client(okHttpClient)
         .build()
 
     private val retrofitService: FoodApiService by lazy {

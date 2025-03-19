@@ -1,6 +1,5 @@
 package com.tohoku.cafeteria.data.datasource
 
-import com.tohoku.cafeteria.data.request.RecommendationRequest
 import com.tohoku.cafeteria.data.response.FoodCategoryResponse
 import com.tohoku.cafeteria.data.response.FoodItemResponse
 import com.tohoku.cafeteria.data.response.FoodVariantResponse
@@ -59,7 +58,7 @@ class FoodMockDataSource : FoodDataSource {
         )
     }
 
-    override suspend fun requestRecommendation(request: RecommendationRequest): Response<RecommendationResponse> {
+    override suspend fun requestRecommendation(query: String): Response<RecommendationResponse> {
         val sampleResponse = RecommendationResponse(
             additionalNotes = "24 years old, 50 kg, 165 cm, lactose intolerant.",
             detailNutritions = listOf(

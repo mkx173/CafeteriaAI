@@ -6,7 +6,6 @@ import com.tohoku.cafeteria.data.datasource.FoodDataSource
 import com.tohoku.cafeteria.data.entity.FoodEntity
 import com.tohoku.cafeteria.data.entity.FoodHistoryEntity
 import com.tohoku.cafeteria.data.request.RecommendationQuery
-import com.tohoku.cafeteria.data.request.RecommendationRequest
 import com.tohoku.cafeteria.data.response.RecommendationResponse
 import com.tohoku.cafeteria.domain.mapper.FoodCategoryMapper
 import com.tohoku.cafeteria.domain.model.CartItem
@@ -99,11 +98,7 @@ class FoodRepository(
         val requestData = buildRecommendationQuery(currentSettings, cartItems, additionalNotes)
 
         // Call the recommendation endpoint.
-        return dataSource.requestRecommendation(
-            RecommendationRequest(
-                query = Json.encodeToString(requestData)
-            )
-        )
+        return dataSource.requestRecommendation(Json.encodeToString(requestData))
     }
 
     suspend fun getFoodByVariantId(variantId: Int): FoodEntity? {
