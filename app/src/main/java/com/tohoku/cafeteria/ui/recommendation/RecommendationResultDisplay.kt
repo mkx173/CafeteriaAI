@@ -57,6 +57,7 @@ import com.tohoku.cafeteria.ui.components.FoodSelectorBottomSheetComponent
 import com.tohoku.cafeteria.ui.navigation.Screen
 import com.tohoku.cafeteria.ui.theme.CafeteriaAITheme
 import com.tohoku.cafeteria.util.ToastManager
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -175,13 +176,8 @@ fun RecommendationResultDisplay (
                 Column(
                     modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
                 ) {
-                    Text(
-                        text = stringResource(R.string.your_recommended_meals),
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                    Text(
-                        text = recommendationResponse.recommendedMealDetail,
-                        modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_small))
+                    MarkdownText(
+                        markdown = recommendationResponse.recommendedMealDetail
                     )
                 }
             }
